@@ -5,7 +5,7 @@ This document provides documentation for the BigQuery setup required for the app
 ## Steps to take:
 
 1. Create a new project.
-2. Create a dataset in the new project. Name it `app_demo`
+2. Create a dataset in the new project. If you just want to copy paste the scripts below, name it `app_demo`.
 3. Populate the dataset with the tables, views, and data. Create tables with [this script](/bigquery/create_tables.sql).
    - Vatroslav can populate the data with [this script](/bigquery/insert_demo_data.sql).
    - For mock data, use [this script](/mock_data.sql).
