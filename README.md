@@ -32,9 +32,6 @@ This project provides an API to interact with the Tabu database using Google Clo
 
 [Using dotenvx to Encrypt the `.env` File](doc/dotenvx.md)
 
-## Contributing
-
-[Contributing](doc/contributing.md)
 
 ## License
 
