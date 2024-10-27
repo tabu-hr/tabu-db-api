@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /app
 
 # Install the dotenvx package globally
-RUN curl -sfS https://dotenvx.sh/install.sh | sh
+#RUN curl -sfS https://dotenvx.sh/install.sh | sh
 
 # Copy the package.json and package-lock.json files to the container
 COPY package*.json ./
@@ -20,7 +20,7 @@ RUN npm install
 COPY . .
 
 # Encrypt the .env file
-RUN dotenvx encrypt .env
+#RUN dotenvx encrypt .env > encrypt.log
 
 
 # Expose port 3000
