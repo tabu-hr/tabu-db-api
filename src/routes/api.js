@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { queryUserTable } = require('../models/user');
+const { queryUserTable, queryUserByEmail } = require('../models/user');
 const { querySubmissionTable } = require('../models/submission');
 const { queryAdditionalPositionTable } = require('../models/additional_position');
 const { queryBenefitChildrenTable } = require('../models/benefit_children');
@@ -23,7 +23,6 @@ const { querySalaryTable } = require('../models/salary');
 const { querySeasonalBonusesTable } = require('../models/seasonal_bonuses');
 const { queryStudentTable } = require('../models/student');
 const { listTables, queryBigQuery } = require('../models/bigQuery');
-const responseUser = require('../dto/user');
 const responseSubmission = require('../dto/submission');
 const responseAdditionalPosition = require('../dto/additional_position');
 const responseBenefitChildren = require('../dto/benefit_children');
@@ -47,6 +46,7 @@ const responseSeasonalBonuses = require('../dto/seasonal_bonuses');
 const responseStudent = require('../dto/student');
 const responseTables = require('../dto/tables');
 const responseBigQuery = require('../dto/bigQuery');
+const { responseUser, responseCheckUser } = require('../dto/user');
 
 router.get('/tables', async (req, res) => {
   try {
@@ -252,6 +252,23 @@ router.get('/student', async (req, res) => {
     res.json(responseStudent(true, 'student', 'queryStudentTable', rows));
   } catch (err) {
     res.json(responseStudent(false, 'student', 'queryStudentTable', null, err.message));
+  }
+});
+
+router.get('/user/check', async (req, res) => {
+  const { email } = req.query;
+  if (!email) {
+    return res.status(400).json(responseCheckUser(false, 'Email parameter is required'));
+  }
+  try {
+    const rows = await queryUserByEmail(email);
+    if (rows.length > 0) {
+      res.json(responseCheckUser(true, 'User email exists', true));
+    } else {
+      res.json(responseCheckUser(true, 'User email does not exist', false));
+    }
+  } catch (err) {
+    res.json(responseCheckUser(false, 'Error checking user email', err.message));
   }
 });
 

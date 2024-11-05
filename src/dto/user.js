@@ -1,11 +1,22 @@
-const response = (success, table, model, response = null, error = null) => {
+const responseUser = (success, response, action, data, error) => {
   return {
     success,
-    table,
-    model,
     response,
-    error
+    action,
+    data,
+    error,
   };
 };
 
-module.exports = response;
+const responseCheckUser = (success, message, exists, error) => {
+  return {
+    success,
+    response : {message, exists},
+    error,
+  };
+};
+
+module.exports = {
+  responseUser,
+  responseCheckUser,
+};

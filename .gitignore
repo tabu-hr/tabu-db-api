@@ -1,4 +1,6 @@
 .vscode/
 .env
 key.json
+big_query_conn.json
 node_modules/
+.obsidian/
