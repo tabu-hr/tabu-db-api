@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 // Load environment variables from .env file
 require('dotenv').config();
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors());
 app.use(apiRoute, routes);
 
 app.listen(port, () => {

@@ -303,6 +303,7 @@ router.get('/user', async (req, res) => {
 router.get('/user/check', async (req, res) => {
   const { email } = req.query;
   if (!email) {
+    res.header('Access-Control-Allow-Origin', '*');
     return res.status(400).json(responseCheckUser(false, 'Email parameter is required'));
   }
   try {
