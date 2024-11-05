@@ -310,10 +310,10 @@ router.get('/user/check', async (req, res) => {
     const rows = await queryUserByEmail(email);
     if (rows.length > 0) {
       res.header('Access-Control-Allow-Origin', '*');
-      res.json(responseCheckUser(true, 'User email exists', true));
     } else {
+      res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, rows.unique_id));
       res.header('Access-Control-Allow-Origin', '*');
-      res.json(responseCheckUser(true, 'User email does not exist', false));
+      res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
     }
   } catch (err) {
     res.header('Access-Control-Allow-Origin', '*');

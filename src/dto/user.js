@@ -8,11 +8,13 @@ const responseUser = (success, response, action, data, error) => {
   };
 };
 
-const responseCheckUser = (success, message, exists, error) => {
+const responseCheckUser = (success, message, exists, action, error, name) => {
   return {
     success,
     response : {message, exists},
+    action,
     error,
+    name,
   };
 };
 
