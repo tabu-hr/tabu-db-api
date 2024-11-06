@@ -26,7 +26,7 @@
    - You need to have BigQuery connection credentials in JSON format before connecting
    ```bash
    echo "GOOGLE_APPLICATION_CREDENTIALS=big_query_conn.json" > .env
-   echo "PORT=3000" >> .env
+   echo "PORT=3001" >> .env
    echo "API_ROUTE=/api" >> .env
    echo "DB_SHEMA=app_demo" >> .env
    ```
@@ -63,7 +63,7 @@
 
 3. **Run the Docker Container**:
    ```bash
-   docker run -p 3000:3000 tabu-db-api
+   docker run -p 3001:3001 tabu-db-api
    ```
 
 ## Using GitHub Secrets to Populate `process.env`
@@ -105,7 +105,7 @@
 
 3. **Add Environment Variables**:
    ```bash
-   echo "PORT=3000" >> .env
+   echo "PORT=3001" >> .env
    echo "API_ROUTE=/api" >> .env
    ```
 

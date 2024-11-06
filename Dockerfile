@@ -22,9 +22,8 @@ COPY . .
 # Encrypt the .env file
 RUN dotenvx encrypt .env
 
-
-# Expose port 3000
-EXPOSE 3000
+# Expose port 3001
+EXPOSE 3001
 
 # Define the command to run the app
 CMD ["npm", "start"]
