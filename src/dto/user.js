@@ -1,4 +1,4 @@
-const response = (success, table, model, response = null, error = null) => {
+const responseUser = (success, table, model, response = null, error = null) => {
   return {
     success,
     table,
@@ -8,4 +8,16 @@ const response = (success, table, model, response = null, error = null) => {
   };
 };
 
-module.exports = response;
+const responseCheckUser = (success, message, exists, action, error, name) => {
+  return {
+    success,
+    response : {message, exists, name},
+    action,
+    error,
+  };
+};
+
+module.exports = {
+  responseUser,
+  responseCheckUser,
+};
