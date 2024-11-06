@@ -11,10 +11,9 @@ const responseUser = (success, response, action, data, error) => {
 const responseCheckUser = (success, message, exists, action, error, name) => {
   return {
     success,
-    response : {message, exists},
+    response : {message, exists, name},
     action,
     error,
-    name,
   };
 };
 

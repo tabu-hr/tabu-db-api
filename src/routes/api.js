@@ -28,8 +28,8 @@ router.get('/user', async (req, res) => {
   }
 });
 
-router.get('/user/check', async (req, res) => {
-  const { email } = req.query;
+router.post('/user/check', async (req, res) => {
+  const { email } = req.body;
   if (!email) {
     res.header('Access-Control-Allow-Origin', '*');
     return res.status(400).json(responseCheckUser(false, 'Email parameter is required'));
@@ -38,8 +38,8 @@ router.get('/user/check', async (req, res) => {
     const rows = await queryUserByEmail(email);
     if (rows.length > 0) {
       res.header('Access-Control-Allow-Origin', '*');
+      res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, rows[0].unique_id));
     } else {
-      res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, rows.unique_id));
       res.header('Access-Control-Allow-Origin', '*');
       res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
     }
