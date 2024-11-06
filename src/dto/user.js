@@ -1,10 +1,10 @@
-const responseUser = (success, response, action, data, error) => {
+const responseUser = (success, table, model, response = null, error = null) => {
   return {
     success,
+    table,
+    model,
     response,
-    action,
-    data,
-    error,
+    error
   };
 };
 
