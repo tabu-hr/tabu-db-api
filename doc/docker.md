@@ -1,6 +1,18 @@
 # Running the Project in a Docker Container
 
-1. **Create a Dockerfile**:
+1. **Use existing shell script**
+   - To build and run server with current dockerfile, use docker startup script: `scripts/docker_run_server.sh`, e.g.:
+   ```shell
+   docker build -t tabu-db-api . &&
+   docker run --name tabu-db-api -p 3001:3001 tabu-db-api
+   ```
+   - To stop and remove existing `tabu-db-api` container, use `scripts/docker_remove_server.sh`, e.g.,:
+   ```shell
+   docker stop tabu-db-api &&
+   docker rm tabu-db-api
+   ```
+
+2. **Create a Dockerfile**:
    ```Dockerfile
 
    # Use the official Node.js image as the base image
@@ -16,17 +28,18 @@
    RUN npm install
 
    # Expose the application port
-   EXPOSE 3000
+   EXPOSE 3001
 
    # Start the application
    CMD ["npm", "start"]
    ```
 
-2. **Build the Docker Image**:
+3. **Build the Docker Image**:
    ```bash
    docker build -t tabu-db-api .
    ```
 
-3. **Run the Docker Container**:
+4. **Run the Docker Container**:
    ```bash
-   docker run -p 3000:3000 tabu-db-api
+   docker run --name tabu-db-api -p 3000:3000 tabu-db-api
+   ```

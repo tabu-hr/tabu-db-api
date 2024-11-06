@@ -23,8 +23,9 @@
    ```
 
 5. **Add Environment Variables**:
+   - You need to have BigQuery connection credentials in JSON format before connecting
    ```bash
-   echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" > .env
+   echo "GOOGLE_APPLICATION_CREDENTIALS=big_query_conn.json" > .env
    echo "PORT=3000" >> .env
    echo "API_ROUTE=/api" >> .env
    echo "DB_SHEMA=app_demo" >> .env
@@ -39,10 +40,8 @@
 
 1. **Create a Dockerfile**:
    ```Dockerfile
-   FROM node:14
-
    # Use the official Node.js image as the base image
-   FROM node:14
+   FROM node:18
 
    # Set the working directory
    WORKDIR /app
@@ -52,9 +51,6 @@
 
    # Install the dependencies
    RUN npm install
-
-   # Expose the application port
-   EXPOSE 3000
 
    # Start the application
    CMD ["npm", "start"]
