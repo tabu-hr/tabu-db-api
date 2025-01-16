@@ -2,6 +2,7 @@
 .idea/
 .env
 .env.keys
+.env.test
 big_query_conn.json
 node_modules/
 .obsidian/
