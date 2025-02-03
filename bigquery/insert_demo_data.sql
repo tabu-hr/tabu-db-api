@@ -3,6 +3,20 @@
 
 begin transaction;
 
+create temp table demo_account as
+select e.email
+from (
+  select email
+  from `elite-clarity-344910.tabu1.web_app_demo_accounts`
+  -- https://docs.google.com/spreadsheets/d/1AnLhIqfe6E3M_DoDWJnYllXAJNsDNIPg3LReFqxKC5k/edit
+  union all
+  select d.email_private
+  from `elite-clarity-344910.tabu1.04_datastudio` d
+  where d.email_private like "%@tabu%"
+) e
+left join app_demo.user u on u.email = e.email
+where u.email is null; -- creates only new users
+
 insert into app_demo.user
 select d.email_private
   ,d.email_private_unchanged
@@ -13,7 +27,7 @@ select d.email_private
     when
       date_add(
         cast(coalesce(d.submission_date_update,d.submission_date_main) as date)
-        ,interval 3 month  -- interaval month gleda mjesec-mjesec neovisno o danima pa se smije koristiti samo u date_add
+        ,interval 3 month  -- interval "month" is subtracts months independently of days so it can only be used in date_add
       ) > current_date()
     then false
     else true
@@ -26,7 +40,7 @@ select d.email_private
   ,concat("https://tabuhr.typeform.com/azuriranje?utm_source=datastudio#unique_id=",d.unique_id) as update_url
   ,concat("https://tabuhr.typeform.com/benefiti?utm_source=datastudio#unique_id=",d.unique_id) as benefits_url
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 insert into app_demo.submission
 select d.unique_id
@@ -49,7 +63,7 @@ select d.unique_id
   ,d.experiencegroup_order
   ,d.employment_status
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 insert into app_demo.salary
 select d.unique_id
@@ -68,7 +82,7 @@ select d.unique_id
   ,cast(d.realni_postotak_porasta_place as int)
   ,cast(d.realni_postotak_porasta_place_bruto as int)
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 insert into app_demo.additional_position
 select d.unique_id
@@ -76,8 +90,8 @@ select d.unique_id
   ,d.additional_position_group
   ,d.additional_position
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.additional_position is not null
-  and d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private
+where d.additional_position is not null;
 
 insert into app_demo.leading
 select d.unique_id
@@ -95,7 +109,7 @@ select d.unique_id
   ,d.leadingexperiencegroup
   ,d.leadingexperiencegroup_order
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 insert into app_demo.company
 select d.unique_id
@@ -114,7 +128,7 @@ select d.unique_id
   ,d.it_or_not
   ,d.company_hqlocation
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 insert into app_demo.student
 select d.unique_id
@@ -124,8 +138,8 @@ select d.unique_id
   ,d.student_prijevozprehrana_yesno
   ,d.student_prijevozprehrana
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.student_satnica is not null
-  and d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private
+where d.student_satnica is not null;
 
 insert into app_demo.freelance
 select d.unique_id
@@ -133,8 +147,8 @@ select d.unique_id
   ,d.freelance
   ,d.freelance_platform
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.freelance is not null
-  and d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private
+where d.freelance is not null;
 
 insert into app_demo.seasonal_bonuses
 select d.unique_id
@@ -153,7 +167,7 @@ select d.unique_id
   ,d.regres_odgovor_old
   ,cast(d.regres_old as int)
 from `elite-clarity-344910.tabu1.04_datastudio` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 insert into app_demo.history
 select d.unique_id
@@ -164,6 +178,6 @@ select d.unique_id
   ,d.avg_salary_bruto
   ,d.submission_date
 from `elite-clarity-344910.tabu1.06_historical_data` d
-where d.email_private like "%@tabu%";
+inner join demo_account a on a.email = d.email_private;
 
 commit;
