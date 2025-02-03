@@ -125,7 +125,7 @@ CREATE TABLE app_demo.company (
     work_home_office STRING,
     work_home_office_order INT64, --Determines how to alphabetically sort work_home_office
     it_or_not STRING,
-    hqlocation STRING
+    hqlocation BOOL
 );
 
 /*
