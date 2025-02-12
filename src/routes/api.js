@@ -4,10 +4,12 @@ const cors = require('../middleware/cors');
 const errorHandler = require('../middleware/errorHandler');
 const validateInput = require('../middleware/validateInput');
 const { queryUserTable, queryUserByEmail } = require('../models/user');
+const { querySubmissionByUniqueId } = require('../models/submission');
 const { listTables, queryBigQuery } = require('../models/bigQuery');
 const responseTables = require('../dto/tables');
 const responseBigQuery = require('../dto/bigQuery');
 const { responseUser, responseCheckUser } = require('../dto/user');
+const { responseSubmissionData } = require('../dto/submission');
 
 router.use(cors);
 
@@ -37,6 +39,20 @@ router.post('/user/check', validateInput, async (req, res, next) => {
       res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, name, rows[0].unique_id));
     } else {
       res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/submission/check', validateInput, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await querySubmissionByUniqueId(unique_id);
+    if (row) {
+      res.json(responseSubmissionData(true, 'Submission data exists', true, 'querySubmissionByUniqueId', null, row.position_group, row.position, row.seniority, row.tech, row.contract_type, row.country_salary));
+    } else {
+      res.json(responseSubmissionData(true, 'Submission data does not exist', false, 'querySubmissionByUniqueId'));
     }
   } catch (err) {
     next(err);
