@@ -30,11 +30,11 @@ router.get('/user', async (req, res, next) => {
 });
 
 router.post('/user/check', validateInput, async (req, res, next) => {
-  const { email } = req.body;
+  const { email, isGoogleLogin, name } = req.body;
   try {
     const rows = await queryUserByEmail(email);
-    if (rows.length > 0) {
-      res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, rows[0].unique_id));
+    if (rows.length > 0 && isGoogleLogin) {
+      res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, name, rows[0].unique_id));
     } else {
       res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
     }
