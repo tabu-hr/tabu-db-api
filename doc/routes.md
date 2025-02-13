@@ -152,3 +152,17 @@ This document provides documentation for the routes available in the Tabu DB API
 - **Description**: Queries data from the `student` table in the given dataset.
 - **Parameters**: None
 - **Response**: The data from the `student` table.
+
+- **Route**: `/user/check`
+- **Method**: POST
+- **Description**: Checks if a user with the given email exists and returns the result.
+- **Parameters**:
+  - `email`: The email of the user to check.
+- **Response**: A message indicating whether the user email exists, along with the user's name and ID if the email exists.
+
+- **Route**: `/submission/check`
+- **Method**: POST
+- **Description**: Checks if a submission with the given unique_id exists and returns the relevant fields.
+- **Parameters**:
+  - `unique_id`: The unique ID of the submission to check.
+- **Response**: A message indicating whether the submission data exists, along with the relevant fields if the submission exists.
