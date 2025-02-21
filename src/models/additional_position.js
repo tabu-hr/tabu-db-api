@@ -21,6 +21,23 @@ async function queryAdditionalPositionTable() {
   }
 }
 
+async function queryAdditionalPositionByUniqueId(unique_id) {
+  const query = `SELECT * FROM \`${shemaName}.additional_position\` WHERE unique_id = @unique_id`;
+  const options = {
+    query: query,
+    params: { unique_id: unique_id },
+  };
+
+  try {
+    const [rows] = await bigquery.query(options);
+    return rows[0];
+  } catch (err) {
+    console.error('ERROR:', err);
+    throw err;
+  }
+}
+
 module.exports = {
   queryAdditionalPositionTable,
+  queryAdditionalPositionByUniqueId,
 };

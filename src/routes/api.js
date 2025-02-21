@@ -59,6 +59,20 @@ router.post('/submission/check', validateInput, async (req, res, next) => {
   }
 });
 
+router.post('/additional_position/check', validateInput, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await queryAdditionalPositionByUniqueId(unique_id);
+    if (row) {
+      res.json(responseAdditionalPositionData(true, 'Additional position data exists', true, 'queryAdditionalPositionByUniqueId', null, row.additional_position_group, row.additional_position));
+    } else {
+      res.json(responseAdditionalPositionData(true, 'Additional position data does not exist', false, 'queryAdditionalPositionByUniqueId'));
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get('/:tableName', async (req, res, next) => {
   const { tableName } = req.params;
   try {
