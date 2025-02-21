@@ -22,7 +22,16 @@ async function queryAdditionalPositionTable() {
 }
 
 async function queryAdditionalPositionByUniqueId(unique_id) {
-  const query = `SELECT * FROM \`${shemaName}.additional_position\` WHERE unique_id = @unique_id`;
+  const query = `
+    SELECT
+      additional_position_group,
+      additional_position
+    FROM
+      \`${shemaName}.additional_position\`
+    WHERE
+      unique_id = @unique_id
+    LIMIT 1
+  `;
   const options = {
     query: query,
     params: { unique_id: unique_id },
