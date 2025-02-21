@@ -5,6 +5,7 @@ const errorHandler = require('../middleware/errorHandler');
 const validateInput = require('../middleware/validateInput');
 const { queryUserTable, queryUserByEmail } = require('../models/user');
 const { querySubmissionByUniqueId } = require('../models/submission');
+const { queryAdditionalPositionByUniqueId } = require('../models/additional_position');
 const { listTables, queryBigQuery } = require('../models/bigQuery');
 const responseTables = require('../dto/tables');
 const responseBigQuery = require('../dto/bigQuery');
