@@ -21,6 +21,32 @@ async function querySalaryTable() {
   }
 }
 
+async function querySalaryByUniqueId(unique_id) {
+  const query = `
+    SELECT
+      salary_net,
+      salary_gross
+    FROM
+      \`${shemaName}.salary\`
+    WHERE
+      unique_id = @unique_id
+    LIMIT 1
+  `;
+  const options = {
+    query: query,
+    params: { unique_id: unique_id },
+  };
+
+  try {
+    const [rows] = await bigquery.query(options);
+    return rows[0];
+  } catch (err) {
+    console.error('ERROR:', err);
+    throw err;
+  }
+}
+
 module.exports = {
   querySalaryTable,
+  querySalaryByUniqueId,
 };

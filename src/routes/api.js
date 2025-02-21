@@ -12,6 +12,8 @@ const responseBigQuery = require('../dto/bigQuery');
 const { responseUser, responseCheckUser } = require('../dto/user');
 const { responseSubmissionData } = require('../dto/submission');
 const { responseAdditionalPositionData } = require('../dto/additional_position');
+const { querySalaryByUniqueId } = require('../models/salary');
+const { responseSalaryData } = require('../dto/salary');
 
 router.use(cors);
 
@@ -69,6 +71,20 @@ router.post('/additional_position/check', validateInput, async (req, res, next) 
       res.json(responseAdditionalPositionData(true, 'Additional position data exists', true, 'queryAdditionalPositionByUniqueId', null, row.additional_position_group, row.additional_position));
     } else {
       res.json(responseAdditionalPositionData(true, 'Additional position data does not exist', false, 'queryAdditionalPositionByUniqueId'));
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/salary/check', validateInput, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await querySalaryByUniqueId(unique_id);
+    if (row) {
+      res.json(responseSalaryData(true, 'Salary data exists', true, 'querySalaryByUniqueId', null, row.salary_net, row.salary_gross));
+    } else {
+      res.json(responseSalaryData(true, 'Salary data does not exist', false, 'querySalaryByUniqueId'));
     }
   } catch (err) {
     next(err);
