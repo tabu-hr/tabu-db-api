@@ -11,6 +11,7 @@ const responseTables = require('../dto/tables');
 const responseBigQuery = require('../dto/bigQuery');
 const { responseUser, responseCheckUser } = require('../dto/user');
 const { responseSubmissionData } = require('../dto/submission');
+const { responseAdditionalPositionData } = require('../dto/additional_position');
 
 router.use(cors);
 
