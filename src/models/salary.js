@@ -1,10 +1,11 @@
 const {BigQuery} = require('@google-cloud/bigquery');
+const config = require('../config/config');
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+keyFilename: config.database.credentialsPath,
 });
-const schemaName = process.env.DB_SCHEMA || 'app_demo';
+const schemaName = config.database.schema;
 
 async function querySalaryTable() {
   const query = `SELECT * FROM \`${schemaName}.salary\` LIMIT 10`;

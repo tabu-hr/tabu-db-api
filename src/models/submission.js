@@ -1,3 +1,4 @@
+const config = require('../config/config');
 const {BigQuery} = require('@google-cloud/bigquery');
 
 async function querySubmissionByUniqueId(unique_id) {
@@ -31,9 +32,9 @@ async function querySubmissionByUniqueId(unique_id) {
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  keyFilename: config.database.credentialsPath,
 });
-const schemaName = process.env.DB_SCHEMA || 'app_demo';
+const schemaName = config.database.schema;
 
 async function querySubmissionTable() {
   const query = `SELECT * FROM \`${schemaName}.submission\` LIMIT 10`;

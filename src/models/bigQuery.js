@@ -1,10 +1,11 @@
 const {BigQuery} = require('@google-cloud/bigquery');
+const config = require('../config/config');
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+keyFilename: config.database.credentialsPath,
 });
-const schemaName = process.env.DB_SCHEMA || 'app_demo';
+const schemaName = config.database.schema;
 
 async function queryBigQuery(tableName) {
   const query = tableName === 'user'
@@ -24,7 +25,7 @@ async function queryBigQuery(tableName) {
 }
 
 async function listTables() {
-  const [tables] = await bigquery.dataset('app_demo').getTables();
+const [tables] = await bigquery.dataset(schemaName).getTables();
   return tables.map(table => table.id);
 }
 
