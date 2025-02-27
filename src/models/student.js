@@ -4,10 +4,10 @@ const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = process.env.DB_SCHEMA || 'app_demo';
 
 async function queryStudentTable() {
-  const query = `SELECT * FROM \`${shemaName}.student\` LIMIT 10`;
+  const query = `SELECT * FROM \`${schemaName}.student\` LIMIT 10`;
   const options = {
     query: query,
   };

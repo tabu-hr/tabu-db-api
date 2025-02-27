@@ -4,12 +4,12 @@ const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = process.env.DB_SCHEMA || 'app_demo';
 
 async function queryBigQuery(tableName) {
   const query = tableName === 'user'
-    ? `SELECT * EXCEPT (password_hash) FROM \`${shemaName}.${tableName}\` LIMIT 10`
-    : `SELECT * FROM \`${shemaName}.${tableName}\` LIMIT 10`;
+    ? `SELECT * EXCEPT (password_hash) FROM \`${schemaName}.${tableName}\` LIMIT 10`
+    : `SELECT * FROM \`${schemaName}.${tableName}\` LIMIT 10`;
   const options = {
     query: query,
   };

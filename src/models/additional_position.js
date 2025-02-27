@@ -4,10 +4,10 @@ const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = process.env.DB_SCHEMA || 'app_demo';
 
 async function queryAdditionalPositionTable() {
-  const query = `SELECT * FROM \`${shemaName}.additional_position\` LIMIT 10`;
+  const query = `SELECT * FROM \`${schemaName}.additional_position\` LIMIT 10`;
   const options = {
     query: query,
   };
@@ -27,7 +27,7 @@ async function queryAdditionalPositionByUniqueId(unique_id) {
       additional_position_group,
       additional_position
     FROM
-      \`${shemaName}.additional_position\`
+      \`${schemaName}.additional_position\`
     WHERE
       unique_id = @unique_id
     LIMIT 1

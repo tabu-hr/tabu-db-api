@@ -10,7 +10,7 @@ async function querySubmissionByUniqueId(unique_id) {
       contract_type,
       country_salary
     FROM
-      \`${shemaName}.submission\`
+      \`${schemaName}.submission\`
     WHERE
       unique_id = @unique_id
     LIMIT 1
@@ -33,10 +33,10 @@ async function querySubmissionByUniqueId(unique_id) {
 const bigquery = new BigQuery({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = process.env.DB_SCHEMA || 'app_demo';
 
 async function querySubmissionTable() {
-  const query = `SELECT * FROM \`${shemaName}.submission\` LIMIT 10`;
+  const query = `SELECT * FROM \`${schemaName}.submission\` LIMIT 10`;
   const options = {
     query: query,
   };

@@ -4,10 +4,10 @@ const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = process.env.DB_SCHEMA || 'app_demo';
 
 async function querySalaryTable() {
-  const query = `SELECT * FROM \`${shemaName}.salary\` LIMIT 10`;
+  const query = `SELECT * FROM \`${schemaName}.salary\` LIMIT 10`;
   const options = {
     query: query,
   };
@@ -27,7 +27,7 @@ async function querySalaryByUniqueId(unique_id) {
       salary_net,
       salary_gross
     FROM
-      \`${shemaName}.salary\`
+      \`${schemaName}.salary\`
     WHERE
       unique_id = @unique_id
     LIMIT 1

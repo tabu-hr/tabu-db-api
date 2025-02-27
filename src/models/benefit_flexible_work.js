@@ -4,10 +4,10 @@ const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = process.env.DB_SCHEMA || 'app_demo';
 
 async function queryBenefitFlexibleWorkTable() {
-  const query = `SELECT * FROM \`${shemaName}.benefit_flexible_work\` LIMIT 10`;
+  const query = `SELECT * FROM \`${schemaName}.benefit_flexible_work\` LIMIT 10`;
   const options = {
     query: query,
   };
