@@ -5,7 +5,7 @@ const response = (success, table, model, response = null, error = null) => {
     table,
     model,
     response,
-    error
+    error,
   };
 };
 

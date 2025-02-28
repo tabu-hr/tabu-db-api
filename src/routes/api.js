@@ -3,6 +3,7 @@ const router = express.Router();
 const cors = require('../middleware/cors');
 const errorHandler = require('../middleware/errorHandler');
 const validateInput = require('../middleware/validateInput');
+const { NotFoundError } = require('../errors/customErrors');
 const { queryUserTable, queryUserByEmail } = require('../models/user');
 const { querySubmissionByUniqueId } = require('../models/submission');
 const { queryAdditionalPositionByUniqueId } = require('../models/additional_position');
@@ -56,7 +57,7 @@ router.post('/submission/check', validateInput, async (req, res, next) => {
     if (row) {
       res.json(responseSubmissionData(true, 'Submission data exists', true, 'querySubmissionByUniqueId', null, row.position_group, row.position, row.seniority, row.tech, row.contract_type, row.country_salary));
     } else {
-      res.json(responseSubmissionData(true, 'Submission data does not exist', false, 'querySubmissionByUniqueId'));
+      throw new NotFoundError('Submission data not found for the provided unique_id');
     }
   } catch (err) {
     next(err);
@@ -70,7 +71,7 @@ router.post('/additional_position/check', validateInput, async (req, res, next) 
     if (row) {
       res.json(responseAdditionalPositionData(true, 'Additional position data exists', true, 'queryAdditionalPositionByUniqueId', null, row.additional_position_group, row.additional_position));
     } else {
-      res.json(responseAdditionalPositionData(true, 'Additional position data does not exist', false, 'queryAdditionalPositionByUniqueId'));
+      throw new NotFoundError('Additional position data not found for the provided unique_id');
     }
   } catch (err) {
     next(err);
@@ -84,7 +85,7 @@ router.post('/salary/check', validateInput, async (req, res, next) => {
     if (row) {
       res.json(responseSalaryData(true, 'Salary data exists', true, 'querySalaryByUniqueId', null, row.salary_net, row.salary_gross));
     } else {
-      res.json(responseSalaryData(true, 'Salary data does not exist', false, 'querySalaryByUniqueId'));
+      throw new NotFoundError('Salary data not found for the provided unique_id');
     }
   } catch (err) {
     next(err);

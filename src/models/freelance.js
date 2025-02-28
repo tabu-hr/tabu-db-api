@@ -1,4 +1,5 @@
 const config = require('../config/config');
+const {DatabaseError} = require('../errors/customErrors');
 const {BigQuery} = require('@google-cloud/bigquery');
 
 // Initialize BigQuery client with authentication
@@ -18,7 +19,7 @@ async function queryFreelanceTable() {
     return rows;
   } catch (err) {
     console.error('ERROR:', err);
-    throw err;
+    throw new DatabaseError('Failed to query freelance table', err);
   }
 }
 

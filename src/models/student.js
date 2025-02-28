@@ -1,10 +1,7 @@
 const config = require('../config/config');
-const {BigQuery} = require('@google-cloud/bigquery');
+const {DatabaseError} = require('../errors/customErrors');
+const BigQueryService = require('../services/bigQueryService');
 
-// Initialize BigQuery client with authentication
-const bigquery = new BigQuery({
-  keyFilename: config.database.credentialsPath,
-});
 const schemaName = config.database.schema;
 
 async function queryStudentTable() {
@@ -13,13 +10,14 @@ async function queryStudentTable() {
     query: query,
   };
 
-  try {
-    const [rows] = await bigquery.query(options);
-    return rows;
-  } catch (err) {
+try {
+const bigQueryService = BigQueryService.getInstance();
+const [rows] = await bigQueryService.query(options);
+return rows;
+} catch (err) {
     console.error('ERROR:', err);
-    throw err;
-  }
+    throw new DatabaseError('Failed to query student table', err);
+}
 }
 
 module.exports = {

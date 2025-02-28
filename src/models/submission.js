@@ -1,24 +1,31 @@
 const config = require('../config/config');
 const {BigQuery} = require('@google-cloud/bigquery');
+const {DatabaseError} = require('../errors/customErrors');
+
+// Initialize BigQuery client with authentication
+const bigquery = new BigQuery({
+  keyFilename: config.database.credentialsPath,
+});
+const schemaName = config.database.schema;
 
 async function querySubmissionByUniqueId(unique_id) {
   const query = `
     SELECT
-      position_group,
-      position,
-      seniority,
-      tech,
-      contract_type,
-      country_salary
+    position_group,
+    position,
+    seniority,
+    tech,
+    contract_type,
+    country_salary
     FROM
-      \`${schemaName}.submission\`
+    \`${schemaName}.submission\`
     WHERE
-      unique_id = @unique_id
+    unique_id = @unique_id
     LIMIT 1
-  `;
+`;
   const options = {
     query: query,
-    params: { unique_id: unique_id },
+    params: {unique_id: unique_id},
   };
 
   try {
@@ -26,15 +33,12 @@ async function querySubmissionByUniqueId(unique_id) {
     return rows.length > 0 ? rows[0] : null;
   } catch (err) {
     console.error('ERROR:', err);
-    throw err;
+    throw new DatabaseError(
+      `Failed to query submission with unique_id: ${unique_id}`,
+      err
+    );
   }
 }
-
-// Initialize BigQuery client with authentication
-const bigquery = new BigQuery({
-  keyFilename: config.database.credentialsPath,
-});
-const schemaName = config.database.schema;
 
 async function querySubmissionTable() {
   const query = `SELECT * FROM \`${schemaName}.submission\` LIMIT 10`;
@@ -47,7 +51,7 @@ async function querySubmissionTable() {
     return rows;
   } catch (err) {
     console.error('ERROR:', err);
-    throw err;
+    throw new DatabaseError('Failed to query submission table', err);
   }
 }
 
