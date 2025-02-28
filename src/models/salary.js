@@ -1,9 +1,11 @@
 const config = require('../config/config');
 const {DatabaseError} = require('../errors/customErrors');
-const BigQueryService = require('../services/bigQueryService');
+const {BigQuery} = require('@google-cloud/bigquery');
 
-// Use the singleton BigQueryService instance
-const bigQueryService = BigQueryService.getInstance();
+// Initialize BigQuery client with authentication
+const bigquery = new BigQuery({
+  keyFilename: config.database.credentialsPath,
+});
 const schemaName = config.database.schema;
 
 async function querySalaryTable() {
@@ -13,7 +15,7 @@ async function querySalaryTable() {
   };
 
   try {
-    const [rows] = await bigQueryService.query(options);
+    const [rows] = await bigquery.query(options);
     return rows;
   } catch (err) {
     console.error('ERROR:', err);
@@ -38,7 +40,7 @@ async function querySalaryByUniqueId(unique_id) {
   };
 
   try {
-    const [rows] = await bigQueryService.query(options);
+    const [rows] = await bigquery.query(options);
     return rows[0];
   } catch (err) {
     console.error('ERROR:', err);
