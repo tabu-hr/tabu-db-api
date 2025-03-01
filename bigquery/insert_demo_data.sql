@@ -19,7 +19,6 @@ where u.email is null; -- creates only new users
 
 insert into app_demo.user
 select d.email_private
-  ,d.email_private_unchanged
   ,null as passwod_hash
   ,d.unique_id
   ,d.bullshit
@@ -37,8 +36,6 @@ select d.email_private
   ,d.year_birth
   ,d.gender
   ,d.education
-  ,concat("https://tabuhr.typeform.com/azuriranje?utm_source=datastudio#unique_id=",d.unique_id) as update_url
-  ,concat("https://tabuhr.typeform.com/benefiti?utm_source=datastudio#unique_id=",d.unique_id) as benefits_url
 from `elite-clarity-344910.tabu1.04_datastudio` d
 inner join demo_account a on a.email = d.email_private;
 
