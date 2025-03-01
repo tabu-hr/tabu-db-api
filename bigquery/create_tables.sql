@@ -6,7 +6,6 @@ Each user can only appear once in this table.
 */
 CREATE TABLE app_demo.user (
     email STRING NOT NULL, --Lowercase email
-    email_unchanged STRING NOT NULL, --Email as entered by the user, e.g. ImePrezime@gmail.com
     password_hash STRING, --Hashed password - used only for non-Google accounts
     unique_id STRING(10) NOT NULL, --Unique identifier of a user
     bullshit BOOLEAN NOT NULL, --Can the user be used for comparison?
@@ -15,9 +14,7 @@ CREATE TABLE app_demo.user (
     experience_submission_date DATE, --Date when the user entered their experience
     year_birth INT64,
     gender STRING,
-    education STRING,
-    update_url STRING,
-    benefits_url STRING
+    education STRING
 );
 
 /*
