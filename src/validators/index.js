@@ -14,12 +14,9 @@ const { body, param, query, validationResult } = require('express-validator');
 
 // Import all validator modules
 const userValidator = require('./userValidator');
-const { 
-  validateCreateSubmission,
-  validateUpdateSubmission,
-  validateGetSubmission,
-  validateDeleteSubmission,
+const {
   validateCheckSubmission,
+  validateGetSubmission,
   validateFilterSubmissions,
   handleValidationErrors
 } = require('./submissionValidator');
@@ -27,13 +24,14 @@ const {
 const {
   validateSalaryCheck,
   validateGetSalaryById,
-  validateCreateSalary,
-  validateUpdateSalary,
   validateListSalaries,
-  validateDeleteSalary
 } = require('./salaryValidator');
 
 const { validateCheckAdditionalPosition } = require('./additionalPositionValidator');
+const { validateListTech } = require('./list_tech');
+const { validateListCountrySalary } = require('./list_country_salary');
+const { validateContractType } = require('./contract_type');
+const { validateDataAmount } = require('./data_amount');
 
 // Helper function to check validation results
 const validate = (validations) => {
@@ -64,26 +62,24 @@ module.exports = {
   validateUser: userValidator.validateUser,
   validateUserGet: userValidator.validateUserGet,
   validateUserCheck: userValidator.validateUserCheck,
-  
+
   // Submission validators
   validateSubmission: validateCheckSubmission,
-  validateCreateSubmission,
-  validateUpdateSubmission,
   validateGetSubmission,
-  validateDeleteSubmission,
   validateFilterSubmissions,
-  
+
   // Salary validators
   validateSalary: validateSalaryCheck,
   validateGetSalaryById,
-  validateCreateSalary,
-  validateUpdateSalary,
   validateListSalaries,
-  validateDeleteSalary,
-  
+
   // Additional position validators
   validateAdditionalPosition: validateCheckAdditionalPosition,
-  
+  validateListTech,
+  validateListCountrySalary,
+  validateContractType,
+  validateDataAmount,
+
   // Utility functions
   handleValidationErrors,
   validate,

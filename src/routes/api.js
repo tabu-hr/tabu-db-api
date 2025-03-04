@@ -14,15 +14,28 @@ const { responseSubmissionData } = require('../dto/submission');
 const { responseAdditionalPositionData } = require('../dto/additional_position');
 const { querySalaryByUniqueId } = require('../models/salary');
 const { responseSalaryData } = require('../dto/salary');
+const { queryListTechByUniqueId } = require('../models/list_tech');
+const { queryListCountrySalaryByUniqueId } = require('../models/list_country_salary');
+const { responseListTechData } = require('../dto/list_tech');
+const { responseListCountrySalaryData } = require('../dto/list_country_salary');
+const { responseContractTypeData } = require('../dto/contract_type');
+const { queryContractTypeByUniqueId } = require('../models/contract_type');
+const { responseDataAmountData } = require('../dto/data_amount');
+const { queryDataAmountByUniqueId } = require('../models/data_amount');
 const {
   validateUser,
   validateUserCheck,
-  validateSubmission,
   validateAdditionalPosition,
   validateSalary,
+  validateSubmission,
+  validateListTech,
+  validateListCountrySalary,
+  validateContractType,
+  validateDataAmount,
   validate,
   param
 } = require('../validators');
+
 
 router.use(cors);
 
@@ -96,6 +109,62 @@ router.post('/salary/check', validateSalary, async (req, res, next) => {
       res.json(responseSalaryData(true, 'Salary data exists', true, 'querySalaryByUniqueId', null, row.salary_net, row.salary_gross));
     } else {
       throw new NotFoundError('Salary data not found for the provided unique_id');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/list_tech/check', validateListTech, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await queryListTechByUniqueId(unique_id);
+    if (row) {
+      res.json(responseListTechData(true, 'List tech data exists', true, 'queryListTechByUniqueId', null, row.tech, row.amount));
+    } else {
+      throw new NotFoundError('List tech data not found for the provided unique_id');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/list_country_salary/check', validateListCountrySalary, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await queryListCountrySalaryByUniqueId(unique_id);
+    if (row) {
+      res.json(responseListCountrySalaryData(true, 'List country salary data exists', true, 'queryListCountrySalaryByUniqueId', null, row.country_salary, row.amount));
+    } else {
+      throw new NotFoundError('List country salary data not found for the provided unique_id');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/contract_type/check', validateContractType, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await queryContractTypeByUniqueId(unique_id);
+    if (row) {
+      res.json(responseContractTypeData(true, 'Contract type data exists', true, 'queryContractTypeByUniqueId', null, row.contract_type, row.amount));
+    } else {
+      throw new NotFoundError('Contract type data not found for the provided unique_id');
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/data_amount/check', validateDataAmount, async (req, res, next) => {
+  const { unique_id } = req.body;
+  try {
+    const row = await queryDataAmountByUniqueId(unique_id);
+    if (row) {
+      res.json(responseDataAmountData(true, 'Data amount exists', true, 'queryDataAmountByUniqueId', null, row.amount));
+    } else {
+      throw new NotFoundError('Data amount not found for the provided unique_id');
     }
   } catch (err) {
     next(err);
