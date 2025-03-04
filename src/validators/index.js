@@ -3,11 +3,6 @@
  * This file exports all validators from the validators directory
  * for easy importing throughout the application
  */
-/**
- * Central export file for all validators
- * This file exports all validators from the validators directory
- * for easy importing throughout the application
- */
 
 // Import express-validator utilities
 const { body, param, query, validationResult } = require('express-validator');
@@ -30,7 +25,7 @@ const {
 const { validateCheckAdditionalPosition } = require('./additionalPositionValidator');
 const { validateListTech } = require('./list_tech');
 const { validateListCountrySalary } = require('./list_country_salary');
-const { validateContractType } = require('./contract_type');
+const { validateListContractType } = require('./list_contract_type');
 const { validateDataAmount } = require('./data_amount');
 
 // Helper function to check validation results
@@ -77,7 +72,7 @@ module.exports = {
   validateAdditionalPosition: validateCheckAdditionalPosition,
   validateListTech,
   validateListCountrySalary,
-  validateContractType,
+  validateListContractType,
   validateDataAmount,
 
   // Utility functions
