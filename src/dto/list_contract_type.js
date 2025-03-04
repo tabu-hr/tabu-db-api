@@ -1,4 +1,4 @@
-function responseContractTypeData(success, message, exists, method, error, contract_type, amount) {
+function responseListContractTypeData(success, message, exists, method, error, contract_type, amount) {
   return {
     success,
     message,
@@ -13,5 +13,5 @@ function responseContractTypeData(success, message, exists, method, error, contr
 }
 
 module.exports = {
-  responseContractTypeData,
+  responseListContractTypeData,
 };

@@ -8,10 +8,10 @@ const bigquery = new BigQuery({
 });
 const schemaName = config.database.schema;
 
-async function queryContractTypeByUniqueId(unique_id) {
+async function queryListContractTypeByUniqueId(unique_id) {
   const sqlQuery = `
     SELECT contract_type, amount
-    FROM \`${schemaName}.contract_type\`
+    FROM \`${schemaName}.list_contract_type\`
     WHERE unique_id = @unique_id
     ORDER BY amount DESC;
   `;
@@ -36,5 +36,5 @@ async function queryContractTypeByUniqueId(unique_id) {
 }
 
 module.exports = {
-  queryContractTypeByUniqueId,
+  queryListContractTypeByUniqueId,
 };

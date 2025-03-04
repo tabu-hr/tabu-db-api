@@ -18,8 +18,8 @@ const { queryListTechByUniqueId } = require('../models/list_tech');
 const { queryListCountrySalaryByUniqueId } = require('../models/list_country_salary');
 const { responseListTechData } = require('../dto/list_tech');
 const { responseListCountrySalaryData } = require('../dto/list_country_salary');
-const { responseContractTypeData } = require('../dto/contract_type');
-const { queryContractTypeByUniqueId } = require('../models/contract_type');
+const { responseListContractTypeData } = require('../dto/list_contract_type');
+const { queryListContractTypeByUniqueId } = require('../models/list_contract_type');
 const { responseDataAmountData } = require('../dto/data_amount');
 const { queryDataAmountByUniqueId } = require('../models/data_amount');
 const {
@@ -30,7 +30,7 @@ const {
   validateSubmission,
   validateListTech,
   validateListCountrySalary,
-  validateContractType,
+  validateListContractType,
   validateDataAmount,
   validate,
   param
@@ -143,14 +143,14 @@ router.post('/list_country_salary/check', validateListCountrySalary, async (req,
   }
 });
 
-router.post('/contract_type/check', validateContractType, async (req, res, next) => {
+router.post('/list_contract_type/check', validateListContractType, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
-    const row = await queryContractTypeByUniqueId(unique_id);
+    const row = await queryListContractTypeByUniqueId(unique_id);
     if (row) {
-      res.json(responseContractTypeData(true, 'Contract type data exists', true, 'queryContractTypeByUniqueId', null, row.contract_type, row.amount));
+      res.json(responseListContractTypeData(true, 'List Contract type data exists', true, 'queryListContractTypeByUniqueId', null, row.contract_type, row.amount));
     } else {
-      throw new NotFoundError('Contract type data not found for the provided unique_id');
+      throw new NotFoundError('List Contract type data not found for the provided unique_id');
     }
   } catch (err) {
     next(err);

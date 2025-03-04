@@ -181,9 +181,7 @@ This document provides documentation for the models available in the Tabu DB API
 - **Purpose**: Represents a list of technologies associated with a user or submission.
 - **View**: This model is a view of the database.
 - **Fields**:
-  - `id`: The unique identifier for the list tech entry.
-  - `userId`: The unique identifier for the user who owns the list tech entry.
-  - `submissionId`: The unique identifier for the submission associated with the list tech entry.
+  - `unique_id`: The unique identifier for the list tech entry.
   - `tech`: The technology stack.
   - `amount`: The amount or count of the technology stack.
 - **Relationships**:
@@ -195,23 +193,19 @@ This document provides documentation for the models available in the Tabu DB API
 - **Purpose**: Represents a list of country salaries associated with a user or submission.
 - **View**: This model is a view of the database.
 - **Fields**:
-  - `id`: The unique identifier for the list country salary entry.
-  - `userId`: The unique identifier for the user who owns the list country salary entry.
-  - `submissionId`: The unique identifier for the submission associated with the list country salary entry.
+  - `unique_id`: The unique identifier for the list country salary entry.
   - `countrySalary`: The country salary amount.
   - `amount`: The amount or count of the country salary.
 - **Relationships**:
   - A list country salary entry belongs to a user.
   - A list country salary entry can be associated with multiple submissions.
 
-## Contract Type Model
+## List Contract Type Model
 
 - **Purpose**: Represents the contract type information for a user or submission.
 - **View**: This model is a view of the database.
 - **Fields**:
-  - `id`: The unique identifier for the contract type.
-  - `userId`: The unique identifier for the user who owns the contract type.
-  - `submissionId`: The unique identifier for the submission associated with the contract type.
+  - `unique_id`: The unique identifier for the contract type.
   - `contractType`: The type of contract.
   - `amount`: The amount or value associated with the contract type.
 - **Relationships**:
@@ -223,9 +217,7 @@ This document provides documentation for the models available in the Tabu DB API
 - **Purpose**: Represents the data amount information for a user or submission.
 - **View**: This model is a view of the database.
 - **Fields**:
-  - `id`: The unique identifier for the data amount.
-  - `userId`: The unique identifier for the user who owns the data amount.
-  - `submissionId`: The unique identifier for the submission associated with the data amount.
+  - `unique_id`: The unique identifier for the data amount.
   - `amount`: The data amount value.
 - **Relationships**:
   - A data amount belongs to a user.
