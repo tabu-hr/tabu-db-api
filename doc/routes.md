@@ -166,3 +166,20 @@ This document provides documentation for the routes available in the Tabu DB API
 - **Parameters**:
   - `unique_id`: The unique ID of the submission to check.
 - **Response**: A message indicating whether the submission data exists, along with the relevant fields if the submission exists.
+
+## API Routes
+
+The following table describes the available API routes in the application:
+
+| Method | Route                      | Description                                              |
+|--------|-----------------------------|----------------------------------------------------------|
+| GET    | /tables                     | Retrieves a list of all tables.                          |
+| POST   | /user/check                 | Validates user email and checks if it exists.           |
+| POST   | /submission/check           | Validates submission data and checks if it exists.    |
+| POST   | /additional_position/check  | Validates additional position data and checks if it exists. |
+| POST   | /salary/check               | Validates salary data and checks if it exists.          |
+| POST   | /list_tech/check            | Validates list tech data and checks if it exists.      |
+| POST   | /list_country_salary/check  | Validates list country salary data and checks if it exists. |
+| POST   | /contract_type/check        | Validates contract type data and checks if it exists.  |
+| POST   | /data_amount/check          | Validates data amount and checks if it exists.          |
+| GET    | /:tableName                 | Retrieves data for a specific table.                    |
