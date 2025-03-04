@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const cors = require('../middleware/cors');
 const errorHandler = require('../middleware/errorHandler');
-const validateInput = require('../middleware/validateInput');
 const { NotFoundError } = require('../errors/customErrors');
 const { queryUserTable, queryUserByEmail } = require('../models/user');
 const { querySubmissionByUniqueId } = require('../models/submission');
@@ -15,10 +14,21 @@ const { responseSubmissionData } = require('../dto/submission');
 const { responseAdditionalPositionData } = require('../dto/additional_position');
 const { querySalaryByUniqueId } = require('../models/salary');
 const { responseSalaryData } = require('../dto/salary');
+const {
+  validateUser,
+  validateUserCheck,
+  validateSubmission,
+  validateAdditionalPosition,
+  validateSalary,
+  validate,
+  param
+} = require('../validators');
 
 router.use(cors);
 
-router.get('/tables', async (req, res, next) => {
+router.get('/tables', validate([
+  // Add query parameter validation if needed in the future
+]), async (req, res, next) => {
   try {
     const tables = await listTables();
     res.json(responseTables(true, 'tables', 'listTables', tables));
@@ -27,7 +37,7 @@ router.get('/tables', async (req, res, next) => {
   }
 });
 
-router.get('/user', async (req, res, next) => {
+router.get('/user', validate([]), async (req, res, next) => {
   try {
     const rows = await queryUserTable();
     res.json(responseUser(true, 'user', 'queryUserTable', rows));
@@ -36,7 +46,7 @@ router.get('/user', async (req, res, next) => {
   }
 });
 
-router.post('/user/check', validateInput, async (req, res, next) => {
+router.post('/user/check', validateUserCheck, async (req, res, next) => {
   const { email, isGoogleLogin, name } = req.body;
   try {
     const rows = await queryUserByEmail(email);
@@ -50,7 +60,7 @@ router.post('/user/check', validateInput, async (req, res, next) => {
   }
 });
 
-router.post('/submission/check', validateInput, async (req, res, next) => {
+router.post('/submission/check', validateSubmission, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await querySubmissionByUniqueId(unique_id);
@@ -64,7 +74,7 @@ router.post('/submission/check', validateInput, async (req, res, next) => {
   }
 });
 
-router.post('/additional_position/check', validateInput, async (req, res, next) => {
+router.post('/additional_position/check', validateAdditionalPosition, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await queryAdditionalPositionByUniqueId(unique_id);
@@ -78,7 +88,7 @@ router.post('/additional_position/check', validateInput, async (req, res, next) 
   }
 });
 
-router.post('/salary/check', validateInput, async (req, res, next) => {
+router.post('/salary/check', validateSalary, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await querySalaryByUniqueId(unique_id);
@@ -92,7 +102,9 @@ router.post('/salary/check', validateInput, async (req, res, next) => {
   }
 });
 
-router.get('/:tableName', async (req, res, next) => {
+router.get('/:tableName', validate([
+  param('tableName').isString().notEmpty().withMessage('Table name must be provided')
+]), async (req, res, next) => {
   const { tableName } = req.params;
   try {
     const rows = await queryBigQuery(tableName);

@@ -1,108 +1,53 @@
-const { 
-ApplicationError, 
-DatabaseError, 
-ValidationError, 
-AuthenticationError, 
-AuthorizationError,
-NotFoundError
-} = require('../errors/customErrors');
+const { ValidationError, NotFoundError, DatabaseError } = require('../errors/customErrors');
 
-/**
-* Global error handling middleware
-* Catches all errors thrown in the application and sends appropriate response
-* with consistent formatting based on error type
-* 
-* @param {Error} err - The error object
-* @param {Object} req - Express request object
-* @param {Object} res - Express response object
-* @param {Function} next - Express next function
-*/
 const errorHandler = (err, req, res, next) => {
-// Collect detailed request information to help with debugging
-const requestInfo = {
-    method: req.method,
-    path: req.path,
-    params: req.params,
-    query: req.query,
-    body: process.env.NODE_ENV !== 'production' ? req.body : '[Hidden in production]',
-    headers: {
-    'user-agent': req.headers['user-agent'],
-    'content-type': req.headers['content-type'],
-    'accept': req.headers['accept']
-    },
-    ip: req.ip,
-    userId: req.user?.id || 'Not authenticated',
-    timestamp: new Date().toISOString()
-};
+  if (err instanceof ValidationError) {
+    return res.status(400).json({
+      success: false,
+      statusCode: 400,
+      type: 'VALIDATION_ERROR',
+      message: err.message,
+      errors: err.errors,
+      timestamp: new Date().toISOString(),
+      stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+      path: req.path,
+    });
+  }
 
-// Log error with contextual information
-console.error(`[ERROR] ${err.name || 'Error'}: ${err.message}`);
-console.error(`Request Context:`, JSON.stringify(requestInfo, null, 2));
+  if (err instanceof NotFoundError) {
+    return res.status(404).json({
+      success: false,
+      statusCode: 404,
+      type: 'NOT_FOUND_ERROR',
+      message: err.message,
+      timestamp: new Date().toISOString(),
+      path: req.path,
+    });
+  }
 
-// Log original error cause if available
-if (err.cause) {
-    console.error(`Original Error Cause:`, err.cause);
-}
+  if (err instanceof DatabaseError) {
+    return res.status(500).json({
+      success: false,
+      statusCode: 500,
+      type: 'DATABASE_ERROR',
+      message: err.message,
+      cause: process.env.NODE_ENV === 'production' ? undefined : err.cause,
+      stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+      timestamp: new Date().toISOString(),
+      path: req.path,
+    });
+  }
 
-// Always log stack trace
-console.error(`Stack Trace:`, err.stack);
-
-// Default error response structure
-const errorResponse = {
+  return res.status(500).json({
     success: false,
-    timestamp: new Date().toISOString(),
-    path: req.path
-};
-
-// Handle specific error types 
-if (err instanceof ApplicationError) {
-    // Handle all custom application errors that extend ApplicationError
-    const response = {
-    ...errorResponse,
-    statusCode: err.statusCode,
-    type: err.type,
-    message: err.message,
-    };
-
-    // Add debugging information in non-production environments
-    if (process.env.NODE_ENV !== 'production') {
-    response.stack = err.stack;
-    
-    // Include original error cause if available
-    if (err.cause) {
-        response.cause = {
-        message: err.cause.message,
-        stack: err.cause.stack
-        };
-    }
-    }
-
-    return res.status(err.statusCode).json(response);
-} 
-
-// Handle any other errors as internal server errors
-const response = {
-    ...errorResponse,
     statusCode: 500,
-    type: 'InternalServerError',
-    message: 'An unexpected error occurred'
-};
-
-// Add error details in non-production environments
-if (process.env.NODE_ENV !== 'production') {
-    response.error = err.message;
-    response.stack = err.stack;
-    
-    // Include original error information if available
-    if (err.cause) {
-    response.cause = {
-        message: err.cause.message,
-        stack: err.cause.stack
-    };
-    }
-}
-
-return res.status(500).json(response);
+    type: 'INTERNAL_SERVER_ERROR',
+    message: 'Internal Server Error',
+    cause: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+    timestamp: new Date().toISOString(),
+    path: req.path,
+  });
 };
 
 module.exports = errorHandler;

@@ -1,6 +1,6 @@
 const config = require('../config/config');
 const {BigQuery} = require('@google-cloud/bigquery');
-const {DatabaseError} = require('../errors/customErrors');
+const {DatabaseError, NotFoundError} = require('../errors/customErrors');
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
@@ -41,6 +41,9 @@ async function queryAdditionalPositionByUniqueId(unique_id) {
 
   try {
     const [rows] = await bigquery.query(options);
+    if (rows.length === 0) {
+      return null;
+    }
     return rows[0];
   } catch (err) {
     console.error('ERROR:', err);

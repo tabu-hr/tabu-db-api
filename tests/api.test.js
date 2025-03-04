@@ -22,7 +22,7 @@ describe('API Endpoints', () => {
   it('should check user email', async () => {
     const response = await request(app)
       .post('/api/user/check')
-      .send({ email: 'test@example.com' });
+      .send({ email: 'info@nimesin.com', isGoogleLogin: true });
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
   });

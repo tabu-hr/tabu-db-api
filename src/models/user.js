@@ -1,6 +1,6 @@
 const config = require('../config/config');
-const {DatabaseError} = require('../errors/customErrors');
-const {BigQuery} = require('@google-cloud/bigquery');
+const { NotFoundError, DatabaseError } = require('../errors/customErrors');
+const { BigQuery } = require('@google-cloud/bigquery');
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
@@ -16,9 +16,15 @@ async function queryUserTable() {
 
   try {
     const [rows] = await bigquery.query(options);
+    if (rows.length === 0) {
+      throw new NotFoundError('No users found');
+    }
     return rows;
   } catch (err) {
     console.error('ERROR:', err);
+    if (err.code === 5) {
+      throw new NotFoundError('User not found', err);
+    }
     throw new DatabaseError('Failed to query user table', err);
   }
 }
@@ -31,9 +37,15 @@ async function queryUserByEmail(email) {
 
   try {
     const [rows] = await bigquery.query(options);
+    if (rows.length === 0) {
+      throw new NotFoundError(`User with email ${email} not found`);
+    }
     return rows;
   } catch (err) {
     console.error('ERROR:', err);
+    if (err.code === 5) {
+      throw new NotFoundError(`User with email ${email} not found`, err);
+    }
     throw new DatabaseError(`Failed to query user by email: ${email}`, err);
   }
 }

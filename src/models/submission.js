@@ -1,6 +1,6 @@
 const config = require('../config/config');
 const {BigQuery} = require('@google-cloud/bigquery');
-const {DatabaseError} = require('../errors/customErrors');
+const {DatabaseError, NotFoundError} = require('../errors/customErrors');
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
@@ -30,10 +30,10 @@ async function querySubmissionByUniqueId(unique_id) {
 
   try {
     const [rows] = await bigquery.query(options);
-    return rows.length > 0 ? rows[0] : null;
+    return rows;
   } catch (err) {
     console.error('ERROR:', err);
-    throw new DatabaseError(
+    throw new NotFoundError(
       `Failed to query submission with unique_id: ${unique_id}`,
       err
     );
