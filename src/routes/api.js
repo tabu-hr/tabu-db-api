@@ -1,4 +1,5 @@
 const express = require('express');
+const securityHeaders = require('../middleware/securityHeaders');
 const apiLimiter = require('../middleware/rateLimiter');
 const router = express.Router();
 const cors = require('../middleware/cors');
@@ -38,6 +39,7 @@ const {
 } = require('../validators');
 
 
+router.use(securityHeaders);
 router.use(cors);
 router.use(apiLimiter);
 
