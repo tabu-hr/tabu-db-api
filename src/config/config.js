@@ -63,7 +63,19 @@ server: {
     * Flag to enable/disable request logging
     * @default false
     */
-    logRequests: process.env.LOG_REQUESTS === 'true'
+    logRequests: process.env.LOG_REQUESTS === 'true',
+
+    /**
+    * Test unique ID for validation tests
+    * @default 'ZH0AUT4KSN'
+    */
+    testUniqueId: process.env.TEST_UNIQUE_ID || 'ZH0AUT4KSN',
+
+    /**
+    * Test email for validation tests
+    * @default 'info@nimesin.com'
+    */
+    testEmail: process.env.TEST_EMAIL || 'info@nimesin.com'
 },
 
 /**
@@ -71,7 +83,7 @@ server: {
 */
 database: {
     /**
-    * Path to Google application credentials file
+    * Path to Google application credentials
     * Required for BigQuery authentication
     */
     credentialsPath: process.env.GOOGLE_APPLICATION_CREDENTIALS,

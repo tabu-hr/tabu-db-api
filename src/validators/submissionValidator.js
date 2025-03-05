@@ -1,43 +1,35 @@
-const { body, validationResult } = require('express-validator');
-const { ValidationError } = require('../errors/customErrors');
+const { body, param, query, validationResult } = require('express-validator');
 
 const validateCheckSubmission = [
-  body('unique_id').isAlphanumeric().withMessage('Unique ID must be alphanumeric').isLength({ min: 8, max: 10 }).withMessage('Unique ID must be between 8 and 10 characters'),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const validationErrors = errors.array().map(error => ({
-        type: 'field',
-        msg: error.msg,
-        path: error.param,
-        location: error.location,
-      }));
-      return next(new ValidationError('unique_id parameter is required for submission check', validationErrors));
-    }
-    next();
-  }
+  body('unique_id').isString().notEmpty().withMessage('unique_id is required and must be a non-empty string'),
+];
+
+const validateGetSubmission = [
+  param('unique_id').isString().notEmpty().withMessage('unique_id is required and must be a non-empty string'),
 ];
 
 const validateFilterSubmissions = [
-  body('date').isISO8601().toDate().withMessage('Date must be a valid ISO 8601 date string'),
-  body('company_id').isAlphanumeric().withMessage('Company ID must be alphanumeric'),
-  body('position_id').isAlphanumeric().withMessage('Position ID must be alphanumeric'),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const validationErrors = errors.array().map(error => ({
-        type: 'field',
-        msg: error.msg,
-        path: error.param,
-        location: error.location,
-      }));
-      return next(new ValidationError('Validation failed', validationErrors));
-    }
-    next();
-  }
+  query('position_group').optional().isString().withMessage('position_group must be a string'),
+  query('position').optional().isString().withMessage('position must be a string'),
+  query('seniority').optional().isString().withMessage('seniority must be a string'),
+  query('tech').optional().isString().withMessage('tech must be a string'),
+  query('contract_type').optional().isString().withMessage('contract_type must be a string'),
+  query('country_salary').optional().isString().withMessage('country_salary must be a string'),
 ];
+
+const { ValidationError } = require('../errors/customErrors');
+
+const handleValidationErrors = (err, req, res, next) => {
+  const errors = validationResult(req).array({ onlyFirstError: true });
+  if (errors.length > 0) {
+    throw new ValidationError('Validation failed', errors);
+  }
+  next();
+};
 
 module.exports = {
   validateCheckSubmission,
-  validateFilterSubmissions
+  validateGetSubmission,
+  validateFilterSubmissions,
+  handleValidationErrors,
 };

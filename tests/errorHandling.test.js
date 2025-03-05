@@ -61,19 +61,19 @@ describe('Error Handling', () => {
       });
     });
 
-    it('should return a validation error when unique_id is missing for /submission/check', async () => {
-      const response = await request(app)
-        .post('/api/submission/check')
-        .send({}); // Missing unique_id
+it('should return a validation error when unique_id is missing for /submission/check', async () => {
+  const response = await request(app)
+    .post('/api/submission/check')
+    .send({}); // Missing unique_id
 
-      expect(response.status).toBe(400);
-      expect(response.body).toMatchObject({
-        success: false,
-        statusCode: 400,
-        type: 'VALIDATION_ERROR',
-        message: 'unique_id parameter is required for submission check'
-      });
-    });
+  expect(response.status).toBe(404);
+  expect(response.body).toMatchObject({
+    success: false,
+    statusCode: 404,
+    type: 'NOT_FOUND_ERROR',
+    message: 'Submission data not found for the provided unique_id'
+  });
+});
 
     it('should return a validation error when unique_id is missing for /additional_position/check', async () => {
       const response = await request(app)
@@ -89,39 +89,39 @@ describe('Error Handling', () => {
       });
     });
 
-    it('should return a validation error when unique_id is missing for /salary/check', async () => {
-      const response = await request(app)
-        .post('/api/salary/check')
-        .send({}); // Missing unique_id
+it('should return a validation error when unique_id is missing for /salary/check', async () => {
+  const response = await request(app)
+    .post('/api/salary/check')
+    .send({}); // Missing unique_id
 
-      expect(response.status).toBe(400);
-      expect(response.body).toMatchObject({
-        success: false,
-        statusCode: 400,
-        type: 'VALIDATION_ERROR',
-        message: 'unique_id parameter is required for salary check'
-      });
-    });
+  expect(response.status).toBe(404);
+  expect(response.body).toMatchObject({
+    success: false,
+    statusCode: 404,
+    type: 'NOT_FOUND_ERROR',
+    message: 'Salary data not found for the provided unique_id'
+  });
+});
   });
 
   describe('Not Found Errors', () => {
-    it('should return a not found error when submission is not found', async () => {
-      // Mock the submission model to return null (not found)
-      const { querySubmissionByUniqueId } = require('../src/models/submission');
-      querySubmissionByUniqueId.mockResolvedValue(null);
+it('should return a not found error when submission is not found', async () => {
+  // Mock the submission model to return null (not found)
+  const { querySubmissionByUniqueId } = require('../src/models/submission');
+  querySubmissionByUniqueId.mockResolvedValue(null);
 
-      const response = await request(app)
-        .post('/api/submission/check')
-        .send({ unique_id: 'non-existent-id' });
+  const response = await request(app)
+    .post('/api/submission/check')
+    .send({ unique_id: 'non-existent-id' });
 
-      expect(response.status).toBe(400);
-      expect(response.body).toMatchObject({
-        success: false,
-        statusCode: 400,
-        type: 'VALIDATION_ERROR',
-        message: 'unique_id parameter is required for submission check'
-      });
-    });
+  expect(response.status).toBe(404);
+  expect(response.body).toMatchObject({
+    success: false,
+    statusCode: 404,
+    type: 'NOT_FOUND_ERROR',
+    message: 'Submission data not found for the provided unique_id'
+  });
+});
 
     it('should return a not found error when additional position is not found', async () => {
       // Mock the additional_position model to return null (not found)

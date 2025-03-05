@@ -1,6 +1,6 @@
 # Models Documentation
 
-This document provides documentation for the models available in the Tabu DB API. Each model is described with its purpose, parameters, and expected response.
+This document provides documentation for the models available in the Tabu DB API. Each model is described with its purpose, fields, and relationships.
 
 ## User Model
 
@@ -175,3 +175,50 @@ This document provides documentation for the models available in the Tabu DB API
 - **Description**: Queries data from the `student` table in the given dataset.
 - **Parameters**: None
 - **Response**: The data from the `student` table.
+
+## List Tech Model
+
+- **Purpose**: Represents a list of technologies associated with a user or submission.
+- **View**: This model is a view of the database.
+- **Fields**:
+  - `unique_id`: The unique identifier for the list tech entry.
+  - `tech`: The technology stack.
+  - `amount`: The amount or count of the technology stack.
+- **Relationships**:
+  - A list tech entry belongs to a user.
+  - A list tech entry can be associated with multiple submissions.
+
+## List Country Salary Model
+
+- **Purpose**: Represents a list of country salaries associated with a user or submission.
+- **View**: This model is a view of the database.
+- **Fields**:
+  - `unique_id`: The unique identifier for the list country salary entry.
+  - `countrySalary`: The country salary amount.
+  - `amount`: The amount or count of the country salary.
+- **Relationships**:
+  - A list country salary entry belongs to a user.
+  - A list country salary entry can be associated with multiple submissions.
+
+## List Contract Type Model
+
+- **Purpose**: Represents the contract type information for a user or submission.
+- **View**: This model is a view of the database.
+- **Fields**:
+  - `unique_id`: The unique identifier for the contract type.
+  - `contractType`: The type of contract.
+  - `amount`: The amount or value associated with the contract type.
+- **Relationships**:
+  - A contract type belongs to a user.
+  - A contract type can be associated with multiple submissions.
+
+## Data Amount Model
+
+- **Purpose**: Represents the data amount information for a user or submission.
+- **View**: This model is a view of the database.
+- **Fields**:
+  - `unique_id`: The unique identifier for the data amount.
+  - `amount`: The data amount value.
+- **Relationships**:
+  - A data amount belongs to a user.
+  - A data amount can be associated with multiple submissions.
