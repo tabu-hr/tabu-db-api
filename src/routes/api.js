@@ -77,7 +77,7 @@ router.post('/submission/check', validateSubmission, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await querySubmissionByUniqueId(unique_id);
-    if (row) {
+    if (rows.length > 0) {
       res.json(responseSubmissionData(true, 'Submission data exists', true, 'querySubmissionByUniqueId', null, row.position_group, row.position, row.seniority, row.tech, row.contract_type, row.country_salary));
     } else {
       throw new NotFoundError('Submission data not found for the provided unique_id');
@@ -118,9 +118,9 @@ router.post('/salary/check', validateSalary, async (req, res, next) => {
 router.post('/list_tech/check', validateListTech, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
-    const row = await queryListTechByUniqueId(unique_id);
-    if (row) {
-      res.json(responseListTechData(true, 'List tech data exists', true, 'queryListTechByUniqueId', null, row.tech, row.amount));
+    const rows = await queryListTechByUniqueId(unique_id);
+    if (rows.length > 0) {
+      res.json(responseListTechData(true, 'List tech data exists', true, 'queryListTechByUniqueId', null, rows));
     } else {
       throw new NotFoundError('List tech data not found for the provided unique_id');
     }
@@ -132,9 +132,9 @@ router.post('/list_tech/check', validateListTech, async (req, res, next) => {
 router.post('/list_country_salary/check', validateListCountrySalary, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
-    const row = await queryListCountrySalaryByUniqueId(unique_id);
-    if (row) {
-      res.json(responseListCountrySalaryData(true, 'List country salary data exists', true, 'queryListCountrySalaryByUniqueId', null, row.country_salary, row.amount));
+    const rows = await queryListCountrySalaryByUniqueId(unique_id);
+    if (rows.length > 0) {
+      res.json(responseListCountrySalaryData(true, 'List country salary data exists', true, 'queryListCountrySalaryByUniqueId', null, rows));
     } else {
       throw new NotFoundError('List country salary data not found for the provided unique_id');
     }
@@ -146,9 +146,9 @@ router.post('/list_country_salary/check', validateListCountrySalary, async (req,
 router.post('/list_contract_type/check', validateListContractType, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
-    const row = await queryListContractTypeByUniqueId(unique_id);
-    if (row) {
-      res.json(responseListContractTypeData(true, 'List Contract type data exists', true, 'queryListContractTypeByUniqueId', null, row.contract_type, row.amount));
+    const rows = await queryListContractTypeByUniqueId(unique_id);
+    if (rows.length > 0) {
+      res.json(responseListContractTypeData(true, 'List Contract type data exists', true, 'queryListContractTypeByUniqueId', null, rows));
     } else {
       throw new NotFoundError('List Contract type data not found for the provided unique_id');
     }

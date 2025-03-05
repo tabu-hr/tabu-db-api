@@ -6,7 +6,7 @@ function responseDataAmountData(success, message, exists, method, error, amount)
     method,
     error,
     data: {
-      amount,
+      amount: amount,
     },
   };
 }
