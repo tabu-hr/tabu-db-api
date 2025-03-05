@@ -25,7 +25,7 @@ async function queryListTechByUniqueId(unique_id) {
     if (rows.length === 0) {
       throw new NotFoundError('List tech data not found for the provided unique_id');
     }
-    return rows[0];
+    return rows;
   } catch (err) {
     console.error('ERROR:', err);
     if (err.code === 5) {
