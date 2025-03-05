@@ -1,5 +1,4 @@
 const express = require('express');
-const securityHeaders = require('../middleware/securityHeaders');
 const apiLimiter = require('../middleware/rateLimiter');
 const router = express.Router();
 const cors = require('../middleware/cors');
@@ -24,6 +23,8 @@ const { responseListContractTypeData } = require('../dto/list_contract_type');
 const { queryListContractTypeByUniqueId } = require('../models/list_contract_type');
 const { responseDataAmountData } = require('../dto/data_amount');
 const { queryDataAmountByUniqueId } = require('../models/data_amount');
+const securityHeaders = require('../middleware/securityHeaders');
+const bigQueryConnectionPool = require('../middleware/bigQueryConnectionPool');
 const {
   validateUser,
   validateUserCheck,
@@ -38,8 +39,10 @@ const {
   param
 } = require('../validators');
 
-
+router.use(cors);
+router.use(apiLimiter);
 router.use(securityHeaders);
+router.use(bigQueryConnectionPool);
 router.use(cors);
 router.use(apiLimiter);
 
