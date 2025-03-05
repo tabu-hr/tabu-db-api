@@ -15,6 +15,16 @@ Based on the code analysis, here are several improvement recommendations for the
 - **[DONE]Input Validation (2025-03-04)**: Add comprehensive input validation for all API endpoints using a library like Joi or express-validator.
     
 - **Rate Limiting**: Implement rate limiting to prevent abuse of the API endpoints.
+
+  **Implementation Details**:
+  - **Package**: `express-rate-limit`
+  - **Configuration**:
+    - **Window**: 15 minutes
+    - **Max Requests**: 100 requests per IP
+    - **Message**: "Too many requests from this IP, please try again later."
+  - **Middleware**: Created in `src/middleware/rateLimiter.js`
+  - **Application**: Applied to all routes in `src/routes/api.js`
+  - **Testing**: Test case added in `tests/rateLimiter.test.js`
     
 - **Security Headers**: Add security headers middleware (like helmet.js) to protect against common web vulnerabilities.
 

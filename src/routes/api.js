@@ -1,4 +1,5 @@
 const express = require('express');
+const apiLimiter = require('../middleware/rateLimiter');
 const router = express.Router();
 const cors = require('../middleware/cors');
 const errorHandler = require('../middleware/errorHandler');
@@ -25,6 +26,7 @@ const {
 } = require('../validators');
 
 router.use(cors);
+router.use(apiLimiter);
 
 router.get('/tables', validate([
   // Add query parameter validation if needed in the future

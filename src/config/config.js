@@ -1,6 +1,6 @@
 /**
 * @fileoverview Centralized configuration module
-* 
+*
 * This module consolidates all environment variables used throughout the application
 * into a single configuration object. This prevents duplication, ensures consistency,
 * and makes it easier to manage configuration changes.
@@ -25,9 +25,17 @@ require('dotenv').config();
 */
 
 /**
+* @typedef {Object} RateLimitingConfig
+* @property {number} windowMs - Window duration in milliseconds
+* @property {number} max - Maximum number of requests per window
+* @property {string} message - Message to display when rate limit is exceeded
+*/
+
+/**
 * @typedef {Object} AppConfig
 * @property {ServerConfig} server - Server-related configuration
 * @property {DatabaseConfig} database - Database-related configuration
+* @property {RateLimitingConfig} rateLimiting - Rate limiting configuration
 */
 
 /**
@@ -44,13 +52,13 @@ server: {
     * @default 3001
     */
     port: parseInt(process.env.PORT || '3001', 10),
-    
+
     /**
     * Base route for API endpoints
     * @default '/api'
     */
     apiRoute: process.env.API_ROUTE || '/api',
-    
+
     /**
     * Flag to enable/disable request logging
     * @default false
@@ -67,12 +75,35 @@ database: {
     * Required for BigQuery authentication
     */
     credentialsPath: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    
+
     /**
     * Database schema name
     * @default 'app_demo'
     */
     schema: process.env.DB_SCHEMA || 'app_demo'
+},
+
+/**
+* Rate limiting configuration settings
+*/
+rateLimiting: {
+    /**
+    * Window duration in milliseconds
+    * @default 15 minutes
+    */
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
+
+    /**
+    * Maximum number of requests per window
+    * @default 100
+    */
+    max: parseInt(process.env.RATE_LIMIT_MAX || '100', 10),
+
+    /**
+    * Message to display when rate limit is exceeded
+    * @default 'Too many requests from this IP, please try again later.'
+    */
+    message: process.env.RATE_LIMIT_MESSAGE || 'Too many requests from this IP, please try again later.'
 }
 };
 
@@ -80,6 +111,6 @@ database: {
 Object.freeze(config);
 Object.freeze(config.server);
 Object.freeze(config.database);
+Object.freeze(config.rateLimiting);
 
 module.exports = config;
-
