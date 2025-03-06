@@ -36,6 +36,7 @@ require('dotenv').config();
 * @property {ServerConfig} server - Server-related configuration
 * @property {DatabaseConfig} database - Database-related configuration
 * @property {RateLimitingConfig} rateLimiting - Rate limiting configuration
+* @property {Object} cache - Cache configuration
 */
 
 /**
@@ -116,13 +117,25 @@ rateLimiting: {
     * @default 'Too many requests from this IP, please try again later.'
     */
     message: process.env.RATE_LIMIT_MESSAGE || 'Too many requests from this IP, please try again later.'
-}
+},
+
+// Add cache configuration
+cache: {
+    durations: {
+        TABLES: 3600,        // 1 hour
+        USER: 1800,          // 30 minutes
+        SUBMISSION: 1800,    // 30 minutes
+        SALARY: 1800         // 30 minutes
+    }
+},
 };
 
 // Freeze the configuration object to prevent modifications at runtime
-Object.freeze(config);
 Object.freeze(config.server);
 Object.freeze(config.database);
 Object.freeze(config.rateLimiting);
+Object.freeze(config.cache.durations);
+Object.freeze(config.cache);
+Object.freeze(config);
 
 module.exports = config;

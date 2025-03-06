@@ -40,7 +40,7 @@ async function queryUserByEmail(email) {
     if (rows.length === 0) {
       throw new NotFoundError(`User with email ${email} not found`);
     }
-    return rows;
+    return rows[0];
   } catch (err) {
     console.error('ERROR:', err);
     if (err.code === 5) {

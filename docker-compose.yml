@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: tabu-db-api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3001
+      - API_ROUTE=/api
+      - DB_SCHEMA=app_demo
+    depends_on:
+      - redis
+    networks:
+      - tabu-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: tabu-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - tabu-network
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  tabu-network:
+    driver: bridge

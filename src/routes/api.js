@@ -4,6 +4,8 @@ const router = express.Router();
 const cors = require('../middleware/cors');
 const errorHandler = require('../middleware/errorHandler');
 const { NotFoundError } = require('../errors/customErrors');
+const { cacheMiddleware } = require('../middleware/cache');
+const config = require('../config/config');
 const { queryUserTable, queryUserByEmail } = require('../models/user');
 const { querySubmissionByUniqueId } = require('../models/submission');
 const { queryAdditionalPositionByUniqueId } = require('../models/additional_position');
@@ -38,17 +40,14 @@ const {
   validate,
   param
 } = require('../validators');
+const CacheMonitor = require('../middleware/cacheMonitor');
 
 router.use(cors);
 router.use(apiLimiter);
 router.use(securityHeaders);
 router.use(bigQueryConnectionPool);
-router.use(cors);
-router.use(apiLimiter);
 
-router.get('/tables', validate([
-  // Add query parameter validation if needed in the future
-]), async (req, res, next) => {
+router.get('/tables', cacheMiddleware('tables', config.cache.durations.TABLES), async (req, res, next) => {
   try {
     const tables = await listTables();
     res.json(responseTables(true, 'tables', 'listTables', tables));
@@ -57,7 +56,7 @@ router.get('/tables', validate([
   }
 });
 
-router.get('/user', validate([]), async (req, res, next) => {
+router.get('/user', cacheMiddleware('user', config.cache.durations.USER), async (req, res, next) => {
   try {
     const rows = await queryUserTable();
     res.json(responseUser(true, 'user', 'queryUserTable', rows));
@@ -69,9 +68,13 @@ router.get('/user', validate([]), async (req, res, next) => {
 router.post('/user/check', validateUserCheck, async (req, res, next) => {
   const { email, isGoogleLogin, name } = req.body;
   try {
-    const rows = await queryUserByEmail(email);
-    if (rows.length > 0 && isGoogleLogin) {
-      res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, name, rows[0].unique_id));
+    const row = await queryUserByEmail(email);
+    if (row) {
+      if (isGoogleLogin) {
+        res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, name, row.unique_id));
+      } else {
+        res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
+      }
     } else {
       res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
     }
@@ -84,8 +87,8 @@ router.post('/submission/check', validateSubmission, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await querySubmissionByUniqueId(unique_id);
-    if (rows.length > 0) {
-      res.json(responseSubmissionData(true, 'Submission data exists', true, 'querySubmissionByUniqueId', null, row.position_group, row.position, row.seniority, row.tech, row.contract_type, row.country_salary));
+    if (row) {
+      res.json(responseSubmissionData(true, 'Submission data exists', true, 'querySubmissionByUniqueId', null, row));
     } else {
       throw new NotFoundError('Submission data not found for the provided unique_id');
     }
@@ -187,6 +190,23 @@ router.get('/:tableName', validate([
     res.json(responseBigQuery(true, tableName, 'queryBigQuery', rows));
   } catch (err) {
     next(err);
+  }
+});
+
+router.get('/system/cache-stats', async (req, res, next) => {
+  try {
+    const stats = await CacheMonitor.getStats();
+    res.json({
+      success: true,
+      response: {
+        message: 'Cache statistics retrieved successfully',
+        stats
+      },
+      action: 'getCacheStats',
+      error: null
+    });
+  } catch (error) {
+    next(error);
   }
 });
 

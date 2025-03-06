@@ -30,7 +30,7 @@ async function querySubmissionByUniqueId(unique_id) {
 
   try {
     const [rows] = await bigquery.query(options);
-    return rows;
+    return rows[0];
   } catch (err) {
     console.error('ERROR:', err);
     throw new NotFoundError(

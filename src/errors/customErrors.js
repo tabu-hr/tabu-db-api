@@ -49,12 +49,32 @@ constructor(message, cause) {
 }
 }
 
+class CacheError extends Error {
+  constructor(message, cause) {
+    super(message);
+    this.name = 'CacheError';
+    this.type = 'CACHE_ERROR';
+    this.cause = cause;
+  }
+}
+
+class ConfigurationError extends Error {
+  constructor(message, cause) {
+    super(message);
+    this.name = 'ConfigurationError';
+    this.type = 'CONFIGURATION_ERROR';
+    this.cause = cause;
+  }
+}
+
 module.exports = {
-ApplicationError,
-DatabaseError,
-ValidationError,
-AuthenticationError,
-AuthorizationError,
-NotFoundError
+  ApplicationError,
+  DatabaseError,
+  ValidationError,
+  AuthenticationError,
+  AuthorizationError,
+  NotFoundError,
+  CacheError,
+  ConfigurationError
 };
 

@@ -70,7 +70,20 @@ Based on the code analysis, here are several improvement recommendations for the
   - **Application**: Applied to all routes in `src/routes/api.js`
   - **Testing**: Test cases added in `tests/bigQueryConnectionPool.test.js`
 
-- **Caching Strategy**: Implement caching for frequently accessed data to reduce database queries.
+- **[DONE] Caching Strategy (2025-03-05)**: Implement caching for frequently accessed data to reduce database queries.
+
+  **Implementation Details**:
+  - **Package**: Redis
+  - **Configuration**:
+    - **Default Expiration**: 1 hour
+    - **Custom Durations**:
+      - Tables list: 1 hour
+      - User data: 30 minutes
+      - Submission data: 30 minutes
+      - Salary data: 30 minutes
+  - **Middleware**: Created in `src/middleware/cache.js`
+  - **Application**: Applied to routes in `src/routes/api.js`
+  - **Monitoring**: Cache statistics available through `/api/system/cache-stats`
 
 - **Pagination**: Add proper pagination for all listing endpoints to handle large datasets efficiently.
 
