@@ -275,6 +275,96 @@ const swaggerOptions = {
               type: 'null'
             }
           }
+        },
+        ValidationError: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: false
+            },
+            response: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Validation error'
+                },
+                errors: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      param: {
+                        type: 'string',
+                        description: 'The parameter that failed validation'
+                      },
+                      msg: {
+                        type: 'string',
+                        description: 'The validation error message'
+                      },
+                      location: {
+                        type: 'string',
+                        description: 'The location of the parameter (body, query, etc.)'
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            action: {
+              type: 'string',
+              example: 'validateRequest'
+            },
+            error: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Validation failed'
+                },
+                status: {
+                  type: 'integer',
+                  example: 400
+                }
+              }
+            }
+          }
+        },
+        NotFoundError: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: false
+            },
+            response: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Resource not found'
+                }
+              }
+            },
+            action: {
+              type: 'string',
+              example: 'findResource'
+            },
+            error: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'The requested resource could not be found'
+                },
+                status: {
+                  type: 'integer',
+                  example: 404
+                }
+              }
+            }
+          }
         }
       },
       responses: {
