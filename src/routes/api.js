@@ -48,6 +48,46 @@ router.use(apiLimiter);
 router.use(securityHeaders);
 router.use(bigQueryConnectionPool);
 
+/**
+ * @swagger
+ * /api/tables:
+ *   get:
+ *     summary: Get list of all available tables
+ *     description: Returns a list of all tables available in the BigQuery database
+ *     tags: [Tables]
+ *     responses:
+ *       200:
+ *         description: List of available tables
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/tables', cacheMiddleware('tables', config.cache.durations.TABLES), async (req, res, next) => {
   try {
     const tables = await listTables();
@@ -57,6 +97,46 @@ router.get('/tables', cacheMiddleware('tables', config.cache.durations.TABLES), 
   }
 });
 
+/**
+ * @swagger
+ * /api/user:
+ *   get:
+ *     summary: Get all users
+ *     description: Returns a list of all users in the database
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/User'
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/user', cacheMiddleware('user', config.cache.durations.USER), async (req, res, next) => {
   try {
     const rows = await queryUserTable();
@@ -66,6 +146,75 @@ router.get('/user', cacheMiddleware('user', config.cache.durations.USER), async 
   }
 });
 
+/**
+ * @swagger
+ * /api/user/check:
+ *   post:
+ *     summary: Check if a user exists by email
+ *     description: Verifies if a user with the given email address exists in the database
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address to check
+ *               isGoogleLogin:
+ *                 type: boolean
+ *                 description: Whether the login attempt is via Google authentication
+ *               name:
+ *                 type: string
+ *                 description: User's name (required for Google login)
+ *     responses:
+ *       200:
+ *         description: User check result
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     name:
+ *                       type: string
+ *                       nullable: true
+ *                     unique_id:
+ *                       type: string
+ *                       nullable: true
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/user/check', validateUserCheck, async (req, res, next) => {
   const { email, isGoogleLogin, name } = req.body;
   try {
@@ -84,6 +233,70 @@ router.post('/user/check', validateUserCheck, async (req, res, next) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/submission/check:
+ *   post:
+ *     summary: Check if a submission exists
+ *     description: Verifies if a submission with the given unique ID exists in the database
+ *     tags: [Submissions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier of the submission
+ *     responses:
+ *       200:
+ *         description: Submission data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     data:
+ *                       type: object
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Submission not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/submission/check', validateSubmission, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -98,6 +311,72 @@ router.post('/submission/check', validateSubmission, async (req, res, next) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/additional_position/check:
+ *   post:
+ *     summary: Check additional position data
+ *     description: Retrieves additional position data for the given unique ID
+ *     tags: [Additional Positions]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the additional position
+ *     responses:
+ *       200:
+ *         description: Additional position data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     additional_position_group:
+ *                       type: string
+ *                     additional_position:
+ *                       type: string
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Additional position not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/additional_position/check', validateAdditionalPosition, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -112,6 +391,72 @@ router.post('/additional_position/check', validateAdditionalPosition, async (req
   }
 });
 
+/**
+ * @swagger
+ * /api/salary/check:
+ *   post:
+ *     summary: Check salary data
+ *     description: Retrieves salary information for the given unique ID
+ *     tags: [Salary]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the salary record
+ *     responses:
+ *       200:
+ *         description: Salary data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     salary_net:
+ *                       type: number
+ *                     salary_gross:
+ *                       type: number
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Salary data not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/salary/check', validateSalary, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -126,6 +471,72 @@ router.post('/salary/check', validateSalary, async (req, res, next) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/list_tech/check:
+ *   post:
+ *     summary: Check technology list data
+ *     description: Retrieves technology list for the given unique ID
+ *     tags: [Technology]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the technology list
+ *     responses:
+ *       200:
+ *         description: Technology list data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Technology list not found
+ *         content:
+ *           application/json:
+*             schema:
+*               $ref: '#/components/schemas/NotFoundError'
+*       500:
+*         description: Server error
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*/
 router.post('/list_tech/check', validateListTech, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -140,6 +551,77 @@ router.post('/list_tech/check', validateListTech, async (req, res, next) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/list_country_salary/check:
+ *   post:
+ *     summary: Check country salary data
+ *     description: Retrieves country salary information for the given unique ID
+ *     tags: [Salary]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the country salary data
+ *     responses:
+ *       200:
+ *         description: Country salary data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           country:
+ *                             type: string
+ *                           salary:
+ *                             type: number
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Country salary data not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/list_country_salary/check', validateListCountrySalary, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -154,6 +636,75 @@ router.post('/list_country_salary/check', validateListCountrySalary, async (req,
   }
 });
 
+/**
+ * @swagger
+ * /api/list_contract_type/check:
+ *   post:
+ *     summary: Check contract type data
+ *     description: Retrieves contract type information for the given unique ID
+ *     tags: [Contract]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the contract type data
+ *     responses:
+ *       200:
+ *         description: Contract type data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           contract_type:
+ *                             type: string
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Contract type data not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/list_contract_type/check', validateListContractType, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -168,6 +719,71 @@ router.post('/list_contract_type/check', validateListContractType, async (req, r
   }
 });
 
+/**
+ * @swagger
+ * /api/data_amount/check:
+ *   post:
+ *     summary: Check data amount
+ *     description: Retrieves data amount information for the given unique ID
+ *     tags: [Data]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - unique_id
+ *             properties:
+ *               unique_id:
+ *                 type: string
+ *                 description: Unique identifier for the data amount record
+ *     responses:
+ *       200:
+ *         description: Data amount information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     exists:
+ *                       type: boolean
+ *                     amount:
+ *                       type: number
+ *                       description: The data amount value
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Data amount not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.post('/data_amount/check', validateDataAmount, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
@@ -182,6 +798,92 @@ router.post('/data_amount/check', validateDataAmount, async (req, res, next) => 
   }
 });
 
+/**
+ * @swagger
+ * /api/{tableName}:
+ *   get:
+ *     summary: Query data from a specific table
+ *     description: Queries data from the specified table with pagination
+ *     tags: [Tables]
+ *     parameters:
+ *       - in: path
+ *         name: tableName
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Name of the table to query
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 1000
+ *           default: 10
+ *         description: Number of records to return (default is 10)
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *           default: 0
+ *         description: Number of records to skip (default is 0)
+ *     responses:
+ *       200:
+ *         description: Table data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         data:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                         pagination:
+ *                           type: object
+ *                           properties:
+ *                             total:
+ *                               type: integer
+ *                             limit:
+ *                               type: integer
+ *                             offset:
+ *                               type: integer
+ *                 type:
+ *                   type: string
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
+ *       404:
+ *         description: Table not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/:tableName', validate([
   param('tableName').isString().notEmpty().withMessage('Table name must be provided'),
   query('limit').optional().isInt({ min: 1, max: 1000 }).withMessage('Limit must be a positive integer between 1 and 1000'),
@@ -203,6 +905,54 @@ router.get('/:tableName', validate([
   }
 });
 
+/**
+ * @swagger
+ * /api/system/cache-stats:
+ *   get:
+ *     summary: Get cache statistics
+ *     description: Retrieves statistics about the application's cache usage
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: Cache statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                     stats:
+ *                       type: object
+ *                       properties:
+ *                         hits:
+ *                           type: integer
+ *                           description: Number of cache hits
+ *                         misses:
+ *                           type: integer
+ *                           description: Number of cache misses
+ *                         keys:
+ *                           type: array
+ *                           items:
+ *                             type: string
+ *                           description: Current keys in cache
+ *                 action:
+ *                   type: string
+ *                 error:
+ *                   type: object
+ *                   nullable: true
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/system/cache-stats', async (req, res, next) => {
   try {
     const stats = await CacheMonitor.getStats();

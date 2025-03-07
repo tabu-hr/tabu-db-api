@@ -50,6 +50,50 @@ require('dotenv').config();
 * Application configuration object containing all environment variables
 * @type {AppConfig}
 */
+const net = require('net');
+
+/**
+ * Checks if a port is in use
+ * @param {number} port - The port to check
+ * @returns {Promise<boolean>} - True if port is in use, false otherwise
+ */
+function isPortInUse(port) {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.once('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        resolve(true); // Port is in use
+      } else {
+        resolve(false); // Some other error occurred
+      }
+    });
+    server.once('listening', () => {
+      server.close();
+      resolve(false); // Port is available
+    });
+    server.listen(port);
+  });
+}
+
+/**
+ * Gets an available port starting from the default port and updates config
+ * @returns {Promise<number>} - An available port number
+ */
+async function getAvailablePort() {
+  let port = parseInt(process.env.PORT || '3001', 10);
+  
+  while (await isPortInUse(port)) {
+    console.log(`Port ${port} is in use, trying ${port + 1}`);
+    port++;
+  }
+  
+  // Update the config.server.port with the available port
+  config.server.port = port;
+  
+  return port;
+}
+
+// Define the mutable config object - will be frozen after port initialization
 const config = {
 /**
 * Server configuration settings
@@ -155,12 +199,22 @@ pagination: {
 };
 
 // Freeze the configuration object to prevent modifications at runtime
-Object.freeze(config.server);
+// Note: We don't freeze server object until after port initialization
 Object.freeze(config.database);
 Object.freeze(config.rateLimiting);
 Object.freeze(config.cache.durations);
 Object.freeze(config.cache);
 Object.freeze(config.pagination);
-Object.freeze(config);
+// config.server and config will be frozen after port initialization
 
-module.exports = config;
+// Export the getAvailablePort function and the config object
+module.exports = {
+  ...config,
+  getAvailablePort,
+  // Method to freeze the config after port initialization
+  freezeConfig: () => {
+    Object.freeze(config.server);
+    Object.freeze(config);
+    console.log(`Configuration frozen with port ${config.server.port}`);
+  }
+};
