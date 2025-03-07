@@ -38,7 +38,8 @@ const {
   validateListContractType,
   validateDataAmount,
   validate,
-  param
+  param,
+  query
 } = require('../validators');
 const CacheMonitor = require('../middleware/cacheMonitor');
 
@@ -182,12 +183,21 @@ router.post('/data_amount/check', validateDataAmount, async (req, res, next) => 
 });
 
 router.get('/:tableName', validate([
-  param('tableName').isString().notEmpty().withMessage('Table name must be provided')
+  param('tableName').isString().notEmpty().withMessage('Table name must be provided'),
+  query('limit').optional().isInt({ min: 1, max: 1000 }).withMessage('Limit must be a positive integer between 1 and 1000'),
+  query('offset').optional().isInt({ min: 0 }).withMessage('Offset must be a non-negative integer')
 ]), async (req, res, next) => {
   const { tableName } = req.params;
+  const limit = req.query.limit ? parseInt(req.query.limit, 10) : config.pagination.limit;
+  const offset = req.query.offset ? parseInt(req.query.offset, 10) : config.pagination.offset;
+  
   try {
-    const rows = await queryBigQuery(tableName);
-    res.json(responseBigQuery(true, tableName, 'queryBigQuery', rows));
+    const result = await queryBigQuery(tableName, limit, offset);
+    const response = {
+      data: result.data,
+      pagination: result.pagination
+    };
+    res.json(responseBigQuery(true, tableName, 'queryBigQuery', response));
   } catch (err) {
     next(err);
   }

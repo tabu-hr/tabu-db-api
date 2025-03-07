@@ -32,11 +32,18 @@ require('dotenv').config();
 */
 
 /**
+* @typedef {Object} PaginationConfig
+* @property {number} limit - Default number of items per page
+* @property {number} offset - Default offset for pagination
+*/
+
+/**
 * @typedef {Object} AppConfig
 * @property {ServerConfig} server - Server-related configuration
 * @property {DatabaseConfig} database - Database-related configuration
 * @property {RateLimitingConfig} rateLimiting - Rate limiting configuration
 * @property {Object} cache - Cache configuration
+* @property {PaginationConfig} pagination - Pagination configuration
 */
 
 /**
@@ -128,6 +135,23 @@ cache: {
         SALARY: 1800         // 30 minutes
     }
 },
+
+/**
+* Pagination configuration settings
+*/
+pagination: {
+    /**
+    * Default number of items per page
+    * @default 10
+    */
+    limit: parseInt(process.env.PAGINATION_LIMIT || '10', 10),
+    
+    /**
+    * Default offset for pagination
+    * @default 0
+    */
+    offset: parseInt(process.env.PAGINATION_OFFSET || '0', 10)
+},
 };
 
 // Freeze the configuration object to prevent modifications at runtime
@@ -136,6 +160,7 @@ Object.freeze(config.database);
 Object.freeze(config.rateLimiting);
 Object.freeze(config.cache.durations);
 Object.freeze(config.cache);
+Object.freeze(config.pagination);
 Object.freeze(config);
 
 module.exports = config;
