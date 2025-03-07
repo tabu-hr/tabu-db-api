@@ -4,11 +4,29 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerRoutes = require('../src/routes/swagger');
 const swaggerSpec = require('../src/config/swagger');
 
-// Create a test Express app (similar to api.test.js)
+// Helper function to create a new app with the current NODE_ENV
+const createApp = () => {
+  const app = express();
+  app.use(express.json());
+  
+  // Only enable Swagger in non-production environments
+  // This mimics the behavior in src/index.js
+  if (process.env.NODE_ENV !== 'production') {
+    app.use('/swagger', swaggerRoutes);
+    app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+  }
+  
+  // Add a regular API endpoint for testing
+  app.get('/api/status', (req, res) => {
+    res.json({ status: 'ok' });
+  });
+  
+  return app;
+};
+
+// Create a test Express app with Swagger always enabled for basic tests
 const app = express();
 app.use(express.json());
-
-// Apply the Swagger routes to the app
 app.use('/swagger', swaggerRoutes);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
@@ -73,6 +91,71 @@ describe('Swagger Documentation', () => {
     if (app.close) {
       await new Promise(resolve => app.close(resolve));
     }
+  });
+});
+
+describe('Swagger UI Environment Configuration', () => {
+  const originalEnv = process.env.NODE_ENV;
+
+  afterEach(() => {
+    // Restore the original NODE_ENV after each test
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  describe('Development Environment', () => {
+    let devApp;
+
+    beforeEach(() => {
+      // Set NODE_ENV to development
+      process.env.NODE_ENV = 'development';
+      devApp = createApp();
+    });
+
+    it('should have Swagger UI accessible in development environment', async () => {
+      const response = await request(devApp).get('/swagger/');
+      expect(response.status).toBe(200);
+      expect(response.headers['content-type']).toContain('text/html');
+      expect(response.text).toContain('Swagger UI');
+    });
+
+    it('should have Swagger JSON endpoint accessible in development environment', async () => {
+      const response = await request(devApp).get('/swagger/json');
+      expect(response.status).toBe(200);
+      expect(response.headers['content-type']).toContain('application/json');
+      expect(response.body).toHaveProperty('openapi', '3.0.0');
+    });
+
+    it('should also have regular API endpoints accessible', async () => {
+      const response = await request(devApp).get('/api/status');
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ status: 'ok' });
+    });
+  });
+
+  describe('Production Environment', () => {
+    let prodApp;
+
+    beforeEach(() => {
+      // Set NODE_ENV to production
+      process.env.NODE_ENV = 'production';
+      prodApp = createApp();
+    });
+
+    it('should not have Swagger UI accessible in production environment', async () => {
+      const response = await request(prodApp).get('/swagger/');
+      expect(response.status).toBe(404);
+    });
+
+    it('should not have Swagger JSON endpoint accessible in production environment', async () => {
+      const response = await request(prodApp).get('/swagger/json');
+      expect(response.status).toBe(404);
+    });
+
+    it('should still have regular API endpoints accessible', async () => {
+      const response = await request(prodApp).get('/api/status');
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ status: 'ok' });
+    });
   });
 });
 
