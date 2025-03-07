@@ -80,7 +80,7 @@ create or replace view app_demo.salaries_avg_median as
 with getdata as (
   select user.unique_id
     ,cast(round(avg(other_salary.salary_net_for_avg) over (partition by user.unique_id),0) as int) as salary_net_avg
-    ,percentile_disc(other_salary.salary_net_for_avg,0.5) over (partition by user.unique_id) as salary_net_median
+    ,percentile_disc(other_salary.salary_net, 0.5) over (partition by user.unique_id) as salary_net_median
   from app_demo.submission user
   inner join app_demo.submission other on other.position_group = user.position_group
     and other.position = user.position
