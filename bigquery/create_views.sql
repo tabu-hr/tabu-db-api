@@ -74,4 +74,26 @@ inner join app_demo.submission other on other.position_group = user.position_gro
   and other.country_salary = user.country_salary
   and other.contract_type = user.contract_type
   --Tech is intentionally not included in default filter
-group by user.unique_id
+group by user.unique_id;
+
+create or replace view app_demo.salaries_avg_median as
+with getdata as (
+  select user.unique_id
+    ,cast(round(avg(other_salary.salary_net_for_avg) over (partition by user.unique_id),0) as int) as salary_net_avg
+    ,percentile_disc(other_salary.salary_net_for_avg,0.5) over (partition by user.unique_id) as salary_net_median
+  from app_demo.submission user
+  inner join app_demo.submission other on other.position_group = user.position_group
+    and other.position = user.position
+    and other.seniority = user.seniority
+    and other.country_salary = user.country_salary
+    and other.contract_type = user.contract_type
+  inner join app_demo.salary other_salary on other_salary.unique_id = other.unique_id
+    --Tech is intentionally not included in default filter
+)
+select d.unique_id
+  ,d.salary_net_avg
+  ,d.salary_net_median
+from getdata d
+group by d.unique_id
+  ,d.salary_net_avg
+  ,d.salary_net_median;
