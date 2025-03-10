@@ -8,4 +8,5 @@ node_modules/
 .obsidian/
 docker-compose.yaml
 nginx.conf/
-testts.disabled/
+tests.disabled/
+coverage/

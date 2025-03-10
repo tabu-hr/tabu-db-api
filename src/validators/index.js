@@ -1,3 +1,6 @@
+const { validateDataAmount } = require('./data_amount');
+const { validateDataAmountWithFilters } = require('./data_amount_filters');
+
 /**
  * Central export file for all validators
  * This file exports all validators from the validators directory
@@ -26,7 +29,6 @@ const { validateCheckAdditionalPosition } = require('./additionalPositionValidat
 const { validateListTech } = require('./list_tech');
 const { validateListCountrySalary } = require('./list_country_salary');
 const { validateListContractType } = require('./list_contract_type');
-const { validateDataAmount } = require('./data_amount');
 
 // Helper function to check validation results
 const validate = (validations) => {
@@ -74,6 +76,7 @@ module.exports = {
   validateListCountrySalary,
   validateListContractType,
   validateDataAmount,
+  validateDataAmountWithFilters,
 
   // Utility functions
   handleValidationErrors,

@@ -167,6 +167,18 @@ This document provides documentation for the routes available in the Tabu DB API
   - `unique_id`: The unique ID of the submission to check.
 - **Response**: A message indicating whether the submission data exists, along with the relevant fields if the submission exists.
 
+- **Route**: `/data_amount/filter`
+- **Method**: POST
+- **Description**: Retrieves data amount and salary statistics based on various filtering parameters.
+- **Parameters**:
+  - `parameter_position_group` OR `parameter_position`: Position group (e.g., "Engineering") or specific position (e.g., "Software Engineer"), one is required but not both
+  - `parameter_seniority`: Seniority level (e.g., "Junior", "Middle", "Senior"), can be pipe-separated for multiple values
+  - `parameter_country_salary`: Country for salary data (e.g., "USA", "Germany"), can be pipe-separated for multiple countries
+  - `parameter_contract_type`: Type of contract (e.g., "Full-time", "Part-time"), can be pipe-separated for multiple types
+  - `parameter_tech`: (Optional) Technology stack (e.g., "JavaScript", "Python"), can be pipe-separated for multiple technologies
+- **Response**: Data including amount of matching records and salary statistics (average and median for both net and gross salary).
+
+
 ## API Routes
 
 The following table describes the available API routes in the application:
@@ -181,5 +193,5 @@ The following table describes the available API routes in the application:
 | POST   | /list_tech/check            | Validates list tech data and checks if it exists.      |
 | POST   | /list_country_salary/check  | Validates list country salary data and checks if it exists. |
 | POST   | /contract_type/check        | Validates contract type data and checks if it exists.  |
-| POST   | /data_amount/check          | Validates data amount and checks if it exists.          |
+| POST   | /data_amount/filter         | Retrieves data amount and salary statistics based on filtering criteria. |
 | GET    | /:tableName                 | Retrieves data for a specific table.                    |
