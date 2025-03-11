@@ -432,7 +432,10 @@ const swaggerOptions = {
     ]
   },
   // Paths to the API docs
-  apis: [path.join(__dirname, '../routes/*.js')], // Path to the API routes
+  apis: [
+    path.join(__dirname, '../routes/**/*.js'), // Include all subdirectories
+    path.join(__dirname, '../routes/*.js')     // Include files directly in routes directory
+  ], // Path to the API routes
 };
 
 // Initialize swagger-jsdoc
