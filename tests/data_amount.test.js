@@ -63,6 +63,10 @@ describe('Data Amount API Endpoints', () => {
       expect(response.status).toBe(200);
       expect(response.body).toMatchObject({
         success: true,
+        message: expect.any(String),
+        exists: true,
+        type: 'data_amount',
+        action: expect.any(String),
         data: {
           amount: 150
         }
@@ -141,9 +145,21 @@ describe('Data Amount API Endpoints', () => {
         .send(validRequestWithPositionGroup);
 
       expect(response.status).toBe(200);
+      expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data).toBeDefined();
-      
+      expect(response.body.response.message).toBeDefined();
+      expect(response.body.response.exists).toBe(true);
+      expect(response.body.response.data).toBeDefined();
+      expect(response.body.response.data).toMatchObject({
+        data_amount: 120,
+        salary_net_avg: 85000,
+        salary_net_median: 82000,
+        salary_gross_avg: 100000,
+        salary_gross_median: 97000
+      });
+      expect(response.body.type).toBeDefined();
+      expect(response.body.action).toBeDefined();
+      expect(response.body.error).toBeNull();
       expect(queryDataAmountWithFilters).toHaveBeenCalledWith(
         validRequestWithPositionGroup.parameter_position_group,
         undefined, // API passes undefined, not null
@@ -172,9 +188,21 @@ describe('Data Amount API Endpoints', () => {
         .send(validRequestWithPosition);
 
       expect(response.status).toBe(200);
+      expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data).toBeDefined();
-      
+      expect(response.body.response.message).toBeDefined();
+      expect(response.body.response.exists).toBe(true);
+      expect(response.body.response.data).toBeDefined();
+      expect(response.body.response.data).toMatchObject({
+        data_amount: 80,
+        salary_net_avg: 75000,
+        salary_net_median: 72000,
+        salary_gross_avg: 90000,
+        salary_gross_median: 87000
+      });
+      expect(response.body.type).toBeDefined();
+      expect(response.body.action).toBeDefined();
+      expect(response.body.error).toBeNull();
       expect(queryDataAmountWithFilters).toHaveBeenCalledWith(
         undefined, // API passes undefined, not null
         validRequestWithPosition.parameter_position,

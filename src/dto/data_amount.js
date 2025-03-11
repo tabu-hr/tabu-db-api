@@ -3,11 +3,12 @@ function responseDataAmountData(success, message, exists, method, error, amount)
     success,
     message,
     exists,
-    method,
+    action: method,
+    type: 'data_amount',
     error,
     data: {
       amount: amount,
-    },
+    }
   };
 }
 

@@ -46,9 +46,12 @@ const {
  *                       type: string
  *                     exists:
  *                       type: boolean
- *                     amount:
- *                       type: number
- *                       description: The data amount value
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         amount:
+ *                           type: number
+ *                           description: The data amount value
  *                 type:
  *                   type: string
  *                 action:
@@ -138,25 +141,28 @@ router.post('/check', validateDataAmount, async (req, res, next) => {
  *                       type: string
  *                     exists:
  *                       type: boolean
- *                     data_amount:
- *                       type: number
- *                       description: The data amount value
- *                     salary_net_avg:
- *                       type: number
- *                       description: Average net salary
- *                       nullable: true
- *                     salary_net_median:
- *                       type: number
- *                       description: Median net salary
- *                       nullable: true
- *                     salary_gross_avg:
- *                       type: number
- *                       description: Average gross salary
- *                       nullable: true
- *                     salary_gross_median:
- *                       type: number
- *                       description: Median gross salary
- *                       nullable: true
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         data_amount:
+ *                           type: number
+ *                           description: The data amount value
+ *                         salary_net_avg:
+ *                           type: number
+ *                           description: Average net salary
+ *                           nullable: true
+ *                         salary_net_median:
+ *                           type: number
+ *                           description: Median net salary
+ *                           nullable: true
+ *                         salary_gross_avg:
+ *                           type: number
+ *                           description: Average gross salary
+ *                           nullable: true
+ *                         salary_gross_median:
+ *                           type: number
+ *                           description: Median gross salary
+ *                           nullable: true
  *                 type:
  *                   type: string
  *                 action:
