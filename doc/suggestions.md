@@ -91,9 +91,9 @@ Based on the code analysis, here are several improvement recommendations for the
 
 - **[DONE] API Documentation (2025-03-07)**: Add OpenAPI/Swagger documentation to make the API easier to understand and consume.
 
-- **Enhanced Logging**: Implement structured logging with different log levels and request IDs for better debugging.
+- **[Skipped] Enhanced Logging**: Implement structured logging with different log levels and request IDs for better debugging.
 
-- **Automated Tests**: Add comprehensive unit and integration tests, particularly for data models and API routes.
+- **[Skipped] Automated Tests**: Add comprehensive unit and integration tests, particularly for data models and API routes.
 
 ## 5. Architecture Improvements
 
