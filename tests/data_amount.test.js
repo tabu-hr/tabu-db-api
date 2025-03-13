@@ -33,13 +33,15 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json(errorResponse);
 });
 
-// Add a function to close connections after tests
+// Connection cleanup is now handled globally in jest.setup.js
 afterAll(async () => {
-  // Close any open connections
-  if (global.redisClient) {
-    await global.redisClient.quit();
-  }
-  // Add any other connection closures here
+  // Add any test-specific cleanup here if needed in the future
+  // Example:
+  // try {
+  //   await someConnection.close();
+  // } catch (error) {
+  //   console.error('Error closing connection:', error);
+  // }
 });
 
 describe('Data Amount API Endpoints', () => {

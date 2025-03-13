@@ -36,6 +36,15 @@ const app = express();
 app.use(express.json());
 app.use('/api', router);
 
+// Create a server to properly close it later
+const server = app.listen(0);
+
+// Register server for cleanup in jest's global registry
+if (!global.__TEST_SERVERS__) {
+  global.__TEST_SERVERS__ = [];
+}
+global.__TEST_SERVERS__.push(server);
+
 describe('API Endpoints', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -202,11 +211,17 @@ describe('API Endpoints', () => {
   afterAll(async () => {
     // Close Redis connection
     const redis = require('../src/config/redis');
-    await redis.quit();
+    try {
+      if (redis.isReady) {
+        await redis.quit();
+      }
+    } catch (error) {
+      console.warn('Error closing Redis connection:', error.message);
+    }
 
     // Close Express server
-    if (app.close) {
-      await new Promise(resolve => app.close(resolve));
+    if (server) {
+      await new Promise(resolve => server.close(resolve));
     }
   });
 });
