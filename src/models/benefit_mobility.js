@@ -1,13 +1,15 @@
+const config = require('../config/config');
 const {BigQuery} = require('@google-cloud/bigquery');
+const {DatabaseError} = require('../errors/customErrors');
 
 // Initialize BigQuery client with authentication
 const bigquery = new BigQuery({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  keyFilename: config.database.credentialsPath,
 });
-const shemaName = process.env.DB_SHEMA || 'app_demo';
+const schemaName = config.database.schema;
 
 async function queryBenefitMobilityTable() {
-  const query = `SELECT * FROM \`${shemaName}.benefit_mobility\` LIMIT 10`;
+  const query = `SELECT * FROM \`${schemaName}.benefit_mobility\` LIMIT 10`;
   const options = {
     query: query,
   };
@@ -17,7 +19,7 @@ async function queryBenefitMobilityTable() {
     return rows;
   } catch (err) {
     console.error('ERROR:', err);
-    throw err;
+    throw new DatabaseError('Failed to query benefit_mobility table', err);
   }
 }
 

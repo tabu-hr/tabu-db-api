@@ -114,6 +114,68 @@
    dotenvx encrypt .env
    ```
 
+## Setting Up as a Systemd Service
+
+To set up the application as a systemd service with all environment variables from the .env.example file:
+
+1. **Run the setup script**:
+   ```bash
+   ./scripts/setup-service.sh
+   ```
+
+2. **Enable and start the service**:
+   ```bash
+   sudo systemctl enable tabu-db-api.service
+   sudo systemctl start tabu-db-api.service
+   ```
+
+3. **Check service status**:
+   ```bash
+   sudo systemctl status tabu-db-api.service
+   ```
+
+## Server Management Scripts
+
+The application comes with several utility scripts to help with server management and maintenance tasks. These scripts are located in the `scripts/` directory and can be used to manage various aspects of your deployment.
+
+### Key Available Scripts
+
+- **Service Management**
+  - `tabudb-status.sh` - Check the current status of the service
+  - `tabudb-restart.sh` - Restart the service
+  - `tabudb-logs.sh` - View service logs with various options
+
+- **Server Setup**
+  - `tabudb-nginx-setup.sh` - Configure Nginx as a reverse proxy
+  - `tabudb-ssl-setup.sh` - Set up SSL with Let's Encrypt
+
+- **Maintenance**
+  - `tabudb-backup.sh` - Create backups of application code, configs, and data
+  - `tabudb-restore.sh` - Restore from backups when needed
+  - `tabudb-update.sh` - Safely update the application
+
+- **Monitoring and Security**
+  - `tabudb-health.sh` - Check system and application health
+  - `tabudb-security-audit.sh` - Perform basic security audits
+
+### Usage Example
+
+```bash
+# Check service status
+./scripts/tabudb-status.sh
+
+# View real-time logs
+./scripts/tabudb-logs.sh -f
+
+# Create a backup
+sudo ./scripts/tabudb-backup.sh
+
+# Configure Nginx
+sudo ./scripts/tabudb-nginx-setup.sh yourdomain.com
+```
+
+For detailed documentation of all scripts, including options and examples, please refer to [Server Management Scripts Documentation](server-management-scripts.md).
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
