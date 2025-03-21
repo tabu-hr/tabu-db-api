@@ -97,7 +97,7 @@ Based on the code analysis, here are several improvement recommendations for the
 
 ## 5. Architecture Improvements
 
-- **Service Layer**: Add a service layer between routes and models to encapsulate business logic and make the code more maintainable.
+- **[WIP] Service Layer (feature-serviceLayer, 2025-03-19)**: Add a service layer between routes and models to encapsulate business logic and make the code more maintainable.
 
 - **DTO Consistency**: Ensure all responses use consistent DTO patterns for better API predictability.
 
