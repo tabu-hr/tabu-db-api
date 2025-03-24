@@ -91,7 +91,16 @@ Based on the code analysis, here are several improvement recommendations for the
 
 - **[DONE] API Documentation (2025-03-07)**: Add OpenAPI/Swagger documentation to make the API easier to understand and consume.
 
-- **[Skipped] Enhanced Logging**: Implement structured logging with different log levels and request IDs for better debugging.
+- **[DONE] API Documentation Structure (2025-03-24)**:
+  - Implement unified swagger documentation structure
+  - Add environment-based API documentation access controls
+  - Ensure consistent path prefixing in swagger definitions
+
+- **[DONE] Enhanced Development Tools (2025-03-24)**:
+  - Implement structured logging with environment-specific configuration
+  - Add prettier for consistent code formatting
+  - Implement express-list-endpoints for better route debugging
+  - Remove duplicate code in test files
 
 - **[Skipped] Automated Tests**: Add comprehensive unit and integration tests, particularly for data models and API routes.
 
@@ -99,9 +108,13 @@ Based on the code analysis, here are several improvement recommendations for the
 
 - **[WIP] Service Layer (feature-serviceLayer, 2025-03-19)**: Add a service layer between routes and models to encapsulate business logic and make the code more maintainable.
 
-- **DTO Consistency**: Ensure all responses use consistent DTO patterns for better API predictability.
+- **[WIP] DTO Consistency (feature-dto-consistency, 2025-03-21)**: Ensure all responses use consistent DTO patterns for better API predictability.
 
 - **Middleware Organization**: Organize middleware into separate files based on functionality.
+
+- **[DONE] Swagger Organization (2025-03-24)**: Move Swagger specifications into a dedicated directory structure under `src/config/swagger/api` for better modularity and split configurations into separate files per API domain.
+
+- **[DONE] Environment-Specific Routes (2025-03-24)**: Add environment-specific route loading mechanism for better configuration management.
 
 ## 6. Deployment and DevOps
 
@@ -113,7 +126,12 @@ Based on the code analysis, here are several improvement recommendations for the
 
 ## 7. Specific Code Improvements
 
-- **SQL Injection Prevention**: While parameterized queries are used, ensure all user input is properly sanitized before constructing any query strings.
+- **[DONE] Security Patterns (2025-03-24)**:
+  - Enforce consistent error handling patterns across API endpoints
+  - Implement environment-aware security settings
+  - Add request validation middleware for all endpoints
+  - Use express-sanitizer for input sanitization
+  - Ensure SQL query parameterization and input sanitation
 
 - **Async/Await Consistency**: Ensure consistent use of async/await pattern throughout the codebase.
 

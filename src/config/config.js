@@ -95,10 +95,16 @@ async function getAvailablePort() {
 
 // Define the mutable config object - will be frozen after port initialization
 const config = {
-/**
-* Server configuration settings
-*/
-server: {
+    /**
+     * Environment flag indicating if app is running in production
+     * @type {boolean}
+     */
+    isProduction: process.env.NODE_ENV === 'production',
+
+    /**
+    * Server configuration settings
+    */
+    server: {
     /**
     * Port the server will listen on
     * @default 3001
@@ -202,6 +208,11 @@ pagination: {
 // Note: We don't freeze server object until after port initialization
 Object.freeze(config.database);
 Object.freeze(config.rateLimiting);
+Object.defineProperty(config, 'isProduction', {
+    value: process.env.NODE_ENV === 'production',
+    writable: false,
+    configurable: false
+});
 Object.freeze(config.cache.durations);
 Object.freeze(config.cache);
 Object.freeze(config.pagination);

@@ -1,59 +1,83 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./config/swagger');
-
-// Load environment variables from .env file
 require('dotenv').config();
 
 const config = require('./config/config');
-const routes = require('./routes/api');
-const swaggerRoutes = require('./routes/swagger');
+const logger = require('./config/logger');
+const environmentRouter = require('./routes/environmentRoutes');
 const { errorHandler } = require('./middleware');
 const { NotFoundError } = require('./errors/customErrors');
-const apiRoute = process.env.API_ROUTE || '/api';
 
-// Middleware to log request URL and parameters with date and time if LOG_REQUESTS is true
-app.use((req, res, next) => {
-  if (process.env.LOG_REQUESTS === 'true') {
-    const currentDate = new Date().toISOString();
-    console.log(`[${currentDate}] Request URL: ${req.url}`);
-    console.log(`[${currentDate}] Request Parameters: ${JSON.stringify(req.params)}`);
-  }
-  next();
-});
-
-app.use(cors());
-app.use(express.json());
-app.use(apiRoute, routes);
-
-// Swagger documentation setup - only available in non-production environments
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/swagger', swaggerRoutes);
-  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-  console.log('Swagger UI enabled - available at /swagger');
+const app = express();
+const environment = process.env.NODE_ENV || 'development';
+// Request logging middleware
+if (process.env.LOG_REQUESTS === 'true') {
+    app.use((req, res, next) => {
+        const currentDate = new Date().toISOString();
+        logger.info(`[${currentDate}] Request URL: ${req.url}`);
+        logger.debug(`[${currentDate}] Request Parameters:`, req.params);
+        next();
+    });
 }
 
-// 404 handler for routes that don't exist
+// Basic middleware
+app.use(cors());
+app.use(express.json());
+
+// Development-specific middleware
+if (environment === 'development') {
+    app.use((req, res, next) => {
+        logger.debug('Request Body:', req.body);
+        next();
+    });
+}
+
+// Load environment-specific routes
+try {
+    logger.info(`Loading routes for ${environment} environment...`);
+    
+    if (environment === 'development') {
+        logger.info('Development mode: Enabling detailed route logging');
+        environmentRouter.stack?.forEach(route => {
+            if (route.route) {
+                logger.info(`Route: ${route.route.path}`);
+                Object.keys(route.route.methods).forEach(method => {
+                    logger.info(`Method: ${method.toUpperCase()}`);
+                });
+            }
+        });
+    }
+    
+    app.use(environmentRouter);
+    logger.info('✓ Environment-specific routes loaded successfully');
+} catch (error) {
+    logger.error('Failed to load environment-specific routes:', error);
+    process.exit(1);
+}
+
+// 404 handler
 app.use((req, res, next) => {
-next(new NotFoundError(`Route ${req.originalUrl} not found`));
+    next(new NotFoundError(`Route ${req.originalUrl} not found`));
 });
 
 // Error handler middleware (should be last)
 app.use(errorHandler);
-app.use(errorHandler);
 
-// Get an available port and start the server
-config.getAvailablePort().then(port => {
-  // Freeze the config now that we have determined the port
-  config.freezeConfig();
-  
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-    console.log(`Configuration port: ${config.server.port}`);
-  });
-}).catch(err => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
-});
+// Start the server
+config.getAvailablePort()
+    .then(port => {
+        config.freezeConfig();
+        
+        app.listen(port, () => {
+            logger.info(`Server is running on http://localhost:${port}`);
+            logger.info(`Environment: ${environment}`);
+            logger.info(`API Route: ${config.server.apiRoute}`);
+            logger.info(`Configuration port: ${config.server.port}`);
+        });
+    })
+    .catch(err => {
+        logger.error('Failed to start server:', err);
+        process.exit(1);
+    });
+
+module.exports = app;

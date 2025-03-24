@@ -7,7 +7,7 @@ const { NotFoundError } = require('../../errors/customErrors');
 const securityHeaders = require('../../middleware/securityHeaders');
 const bigQueryConnectionPool = require('../../middleware/bigQueryConnectionPool');
 const { validateSalary } = require('../../validators');
-
+const config = require('../../config/config');
 // Import required models
 const { querySalaryByUniqueId } = require('../../models/salary');
 
@@ -20,73 +20,7 @@ router.use(apiLimiter);
 router.use(securityHeaders);
 router.use(bigQueryConnectionPool);
 
-/**
- * @swagger
- * /api/salary/check:
- *   post:
- *     summary: Check salary data
- *     description: Retrieves salary information for the given unique ID
- *     tags: [Salary]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - unique_id
- *             properties:
- *               unique_id:
- *                 type: string
- *                 description: Unique identifier for the salary record
- *     responses:
- *       200:
- *         description: Salary data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 response:
- *                   type: object
- *                   properties:
- *                     message:
- *                       type: string
- *                     exists:
- *                       type: boolean
- *                     salary_net:
- *                       type: number
- *                     salary_gross:
- *                       type: number
- *                 type:
- *                   type: string
- *                 action:
- *                   type: string
- *                 error:
- *                   type: object
- *                   nullable: true
- *       400:
- *         description: Validation error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ValidationError'
- *       404:
- *         description: Salary data not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/NotFoundError'
- *       500:
- *         description: Server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- */
-router.post('/check', validateSalary, async (req, res, next) => {
+router.post('/check', async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await querySalaryByUniqueId(unique_id);
@@ -96,6 +30,7 @@ router.post('/check', validateSalary, async (req, res, next) => {
       throw new NotFoundError('Salary data not found for the provided unique_id');
     }
   } catch (err) {
+    console.error(`Error processing request: ${err.message}`);
     next(err);
   }
 });
@@ -103,4 +38,3 @@ router.post('/check', validateSalary, async (req, res, next) => {
 router.use(errorHandler);
 
 module.exports = router;
-
