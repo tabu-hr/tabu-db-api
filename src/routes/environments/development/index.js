@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const apiRoutes = require('../../api');
+const fs = require('fs');
+const path = require('path');
 const config = require('../../../config/config');
 const logger = require('../../../config/logger');
-const path = require('path');
-const fs = require('fs');
 
 let swaggerRouter;
 try {
@@ -12,16 +11,51 @@ try {
 } catch (err) {
     logger.warn('Swagger router not found:', err.message);
 }
-// Log route mounting for debugging
-logger.info(`Mounting API routes at: ${config.server.apiRoute}`);
 
-// Mount API routes using configured API route path
-router.use(config.server.apiRoute, apiRoutes);
+logger.info('=== Loading Development Environment Routes ===');
+
+// Keep track of all mounted routes
+const mountedRoutes = [];
+
+// Dynamically load and mount API routes
+const apiRoutesPath = path.join(__dirname, '../../../routes/api');
+fs.readdirSync(apiRoutesPath).forEach(file => {
+    // Skip non-js files
+    if (!file.endsWith('.js')) {
+        return;
+    }
+
+    try {
+        // Convert filename to route path (e.g., user.js -> /user)
+        const routePath = `/${file.replace('.js', '')}`;
+        const fullPath = path.join(apiRoutesPath, file);
+        
+        // Import the route module
+        const routeModule = require(fullPath);
+        
+        // Mount the route at the configured API path
+        const fullRoutePath = `${config.server.apiRoute}${routePath}`;
+        router.use(fullRoutePath, routeModule);
+        
+        // Store mounted route info
+        mountedRoutes.push({
+            path: fullRoutePath,
+            file: file
+        });
+    } catch (err) {
+        logger.error(`Error loading route file ${file}:`, err);
+    }
+});
 
 // Mount Swagger documentation if available
-const swaggerConfigPath = path.join(__dirname, '../../../config/swagger/openapi.json');
 if (swaggerRouter) {
     router.use('/swagger', swaggerRouter);
+    mountedRoutes.push({
+        path: '/swagger',
+        file: 'swagger.js'
+    });
+
+    const swaggerConfigPath = path.join(__dirname, '../../../config/swagger/openapi.json');
     router.get('/swagger/json', (req, res, next) => {
         try {
             if (fs.existsSync(swaggerConfigPath)) {
@@ -37,6 +71,10 @@ if (swaggerRouter) {
             next(err);
         }
     });
+    mountedRoutes.push({
+        path: '/swagger/json',
+        file: 'swagger.js'
+    });
 } else {
     router.use('/swagger', (req, res) => {
         res.status(404).json({
@@ -44,6 +82,15 @@ if (swaggerRouter) {
         });
     });
 }
+
+// Display all mounted routes
+logger.info('\n=== Mounted Routes ===');
+mountedRoutes.sort((a, b) => a.path.localeCompare(b.path))
+    .forEach(route => {
+        logger.info(`${route.path.padEnd(40)} [${route.file}]`);
+    });
+logger.info('===================\n');
+
 // Error handling middleware specific to development environment
 router.use((err, req, res, next) => {
     logger.error('Development environment error:', err);

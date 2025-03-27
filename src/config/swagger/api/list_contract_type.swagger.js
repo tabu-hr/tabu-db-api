@@ -1,3 +1,4 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
 
 /**
@@ -8,7 +9,7 @@ const commonSchemas = require('../common.swagger');
  */
 
 const contractTypeSwagger = {
-    '/list_contract_type/check': {
+    [`${API_ROUTE}/list_contract_type/check`]: {
         post: {
             summary: 'Check contract type data',
             description: 'Retrieves contract type information for the given unique ID',

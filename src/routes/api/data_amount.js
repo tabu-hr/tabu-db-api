@@ -9,13 +9,13 @@ const {
   validateDataAmount,
   validateDataAmountWithFilters
 } = require('../../validators');
-
-router.post('/check', async (req, res, next) => {
+const { extractToken, authenticateToken } = require('../../middleware/auth');
+router.post('/check', extractToken, authenticateToken, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await queryDataAmountByUniqueId(unique_id);
     if (row) {
-      res.json(responseDataAmountData(true, 'Data amount exists', true, 'queryDataAmountByUniqueId', null, row.amount));
+      res.status(200).json(responseDataAmountData(true, 'Data amount exists', true, 'queryDataAmountByUniqueId', null, row.amount));
     } else {
       throw new NotFoundError('Data amount not found for the provided unique_id');
     }
@@ -25,7 +25,7 @@ router.post('/check', async (req, res, next) => {
   }
 });
 
-router.post('/filter', async (req, res, next) => {
+router.post('/filter', extractToken, authenticateToken, async (req, res, next) => {
   const { 
     parameter_position_group, 
     parameter_position, 
@@ -44,7 +44,7 @@ router.post('/filter', async (req, res, next) => {
       parameter_tech
     );
     if (row) {
-      res.json(responseDataAmountFiltersData(
+      res.status(200).json(responseDataAmountFiltersData(
         true, 
         'Data with filters exists', 
         true, 

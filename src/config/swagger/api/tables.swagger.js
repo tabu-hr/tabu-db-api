@@ -1,3 +1,4 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
 
 /**
@@ -40,7 +41,7 @@ const commonSchemas = require('../common.swagger');
  */
 
 const paths = {
-  '/tables': {
+  [`${API_ROUTE}/tables`]: {
     get: {
       tags: ['Tables'],
       summary: 'Get all available tables',

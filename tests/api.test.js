@@ -1,6 +1,5 @@
 const request = require('supertest');
-const express = require('express');
-const router = require('../src/routes/api');
+const { createTestApp } = require('./setup');
 const config = require('../src/config/config');
 const apiRoute = config.server.apiRoute;
 
@@ -32,22 +31,12 @@ jest.mock('../src/models/list_contract_type', () => ({
   queryListContractTypeByUniqueId: jest.fn()
 }));
 
-const app = express();
-app.use(express.json());
-app.use('/api', router);
-
-// Create a server to properly close it later
-const server = app.listen(0);
-
-// Register server for cleanup in jest's global registry
-if (!global.__TEST_SERVERS__) {
-  global.__TEST_SERVERS__ = [];
-}
-global.__TEST_SERVERS__.push(server);
+let app;
 
 describe('API Endpoints', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    app = createTestApp();
   });
 
   it('should fetch tables', async () => {
@@ -176,8 +165,10 @@ describe('API Endpoints', () => {
     expect(response.body.success).toBe(true);
   });
 
-  it('should fetch data from a specific table', async () => {
-    const response = await request(app).get(`${apiRoute}/salary`);
+  it('should check salary data', async () => {
+    const response = await request(app)
+      .post(`${apiRoute}/salary/check`)
+      .send({ unique_id: config.server.testUniqueId });
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
   });
@@ -217,11 +208,6 @@ describe('API Endpoints', () => {
       }
     } catch (error) {
       console.warn('Error closing Redis connection:', error.message);
-    }
-
-    // Close Express server
-    if (server) {
-      await new Promise(resolve => server.close(resolve));
     }
   });
 });

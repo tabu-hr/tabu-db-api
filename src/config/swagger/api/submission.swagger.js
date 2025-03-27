@@ -1,4 +1,6 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
+
 /**
  * @swagger
  * tags:
@@ -38,7 +40,7 @@ const commonSchemas = require('../common.swagger');
  * @type {Object}
  */
 const submissionSwagger = {
-  '/submission/check': {
+  [`${API_ROUTE}/submission/check`]: {
     post: {
       summary: 'Check if a submission exists',
       description: 'Verifies if a submission with the given unique ID exists in the database',

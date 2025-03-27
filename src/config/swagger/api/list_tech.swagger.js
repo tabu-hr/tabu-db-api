@@ -1,3 +1,4 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
 
 /**
@@ -41,7 +42,7 @@ const commonSchemas = require('../common.swagger');
  */
 
 const techListSwagger = {
-    [`/list_tech/check`]: {
+    [`${API_ROUTE}/list_tech/check`]: {
         post: {
             summary: 'Check technology list data',
             description: 'Retrieves technology list for the given unique ID',

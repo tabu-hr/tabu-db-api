@@ -8,7 +8,7 @@ const responseTables = require('../../dto/tables');
 const responseBigQuery = require('../../dto/bigQuery');
 const { NotFoundError } = require('../../errors/customErrors');
 
-router.get('/tables', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const tables = await listTables();
     res.json(responseTables(true, 'tables', 'listTables', tables));

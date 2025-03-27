@@ -2,7 +2,7 @@ const { API_ROUTE } = require('./routes');
 
 module.exports = {
   paths: {
-    '/data_amount/check': {
+    [`${API_ROUTE}/data_amount/check`]: {
       post: {
         summary: 'Check data amount',
         description: 'Retrieves data amount for the given unique ID',
@@ -95,7 +95,7 @@ module.exports = {
         }
       }
     },
-    '/data_amount/filter': {
+    [`${API_ROUTE}/data_amount/filter`]: {
       post: {
         summary: 'Filter data amount',
         description: 'Retrieves data amount based on multiple filter parameters',

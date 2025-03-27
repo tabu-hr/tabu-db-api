@@ -1,6 +1,7 @@
+const { API_ROUTE } = require('./routes');
 
 module.exports = {
-    [`/list_country_salary/check`]: {
+    [`${API_ROUTE}/list_country_salary/check`]: {
         post: {
             summary: 'Check country salary data',
             description: 'Retrieves country salary information for the given unique ID',

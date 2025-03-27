@@ -1,7 +1,8 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
 
 module.exports = {
-    '/user': {
+    [`${API_ROUTE}/user`]: {
         get: {
             summary: 'Get all users',
             description: 'Returns a list of all users in the database',
@@ -59,7 +60,7 @@ module.exports = {
             }
         }
     },
-    '/user/check': {
+    [`${API_ROUTE}/user/check`]: {
         post: {
             summary: 'Check if a user exists by email',
             description: 'Verifies if a user with the given email address exists in the database',

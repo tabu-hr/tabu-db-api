@@ -3,6 +3,7 @@ const swaggerUi = require('swagger-ui-express');
 const path = require('path');
 const fs = require('fs');
 const logger = require('../../../config/logger');
+const config = require('../../../config/config');
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const swaggerDocument = {
     },
     servers: [
         {
-            url: '/api',
+            url: '',
             description: 'API base URL'
         }
     ],
@@ -35,9 +36,10 @@ fs.readdirSync(swaggerApiPath).forEach(file => {
             if (apiSpec.paths) {
                 // Process paths to ensure proper /api prefix
                 const processedPaths = Object.entries(apiSpec.paths).reduce((acc, [path, methods]) => {
-                    const finalPath = path.startsWith('/api') || path.startsWith('/swagger') 
-                        ? path 
-                        : `/api${path}`;
+                    // Only add apiRoute prefix if path doesn't already start with it and isn't a swagger path
+                    const finalPath = path.startsWith('/swagger') || path.startsWith(`${config.server.apiRoute}`)
+                        ? path
+                        : `${config.server.apiRoute}${path}`;
                     return { ...acc, [finalPath]: methods };
                 }, {});
                 Object.assign(swaggerDocument.paths, processedPaths);
