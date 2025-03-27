@@ -1,54 +1,8 @@
-module.exports = {
-  paths: {
-    "/system/cache-stats": {
-      "get": {
-        "tags": ["System"],
-        "summary": "Get cache statistics",
-        "responses": {
-          "200": {
-            "description": "Cache statistics",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CacheStatsResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  schemas: {
-    CacheStatsResponse: {
-      "type": "object",
-      "properties": {
-        "success": { "type": "boolean" },
-        "response": {
-          "type": "object",
-          "properties": {
-            "message": { "type": "string" },
-            "stats": {
-              "type": "object",
-              "properties": {
-                "hits": { "type": "number" },
-                "misses": { "type": "number" },
-                "keys": { "type": "number" },
-                "ksize": { "type": "number" },
-                "vsize": { "type": "number" }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
 
 const systemSwagger = {
-  '/system/cache-stats': {
+  [`${API_ROUTE}/system/cache-stats`]: {
     get: {
       summary: 'Get cache statistics',
       description: 'Returns statistics about the cache system',

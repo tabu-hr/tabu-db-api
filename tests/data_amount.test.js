@@ -1,6 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-const router = require('../src/routes/api');
+const router = require('../src/routes/index');
 const config = require('../src/config/config');
 const { NotFoundError } = require('../src/errors/customErrors');
 
@@ -16,7 +16,7 @@ jest.mock('../src/models/data_amount_filters', () => ({
 
 const app = express();
 app.use(express.json());
-app.use('/api', router);
+app.use(config.server.apiRoute, router);
 
 // Add error middleware similar to what's in the application
 app.use((err, req, res, next) => {
@@ -49,7 +49,7 @@ describe('Data Amount API Endpoints', () => {
     jest.clearAllMocks();
   });
 
-  describe('POST /api/data_amount/check', () => {
+  describe(`POST ${config.server.apiRoute}/data_amount/check`, () => {
     const validUniqueId = 'test-unique-id';
 
     it('should return data amount for a valid unique_id', async () => {
@@ -59,7 +59,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountByUniqueId.mockResolvedValue(mockData);
 
       const response = await request(app)
-        .post(`/api/data_amount/check`)
+        .post(`${config.server.apiRoute}/data_amount/check`)
         .send({ unique_id: validUniqueId });
 
       expect(response.status).toBe(200);
@@ -79,7 +79,7 @@ describe('Data Amount API Endpoints', () => {
     // Test that even with missing unique_id, the API still returns 200 (matches actual implementation)
     it('correctly handles missing unique_id parameter', async () => {
       const response = await request(app)
-        .post(`/api/data_amount/check`)
+        .post(`${config.server.apiRoute}/data_amount/check`)
         .send({});
 
       expect(response.status).toBe(200);
@@ -90,7 +90,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountByUniqueId.mockRejectedValue(new Error('Database error'));
 
       const response = await request(app)
-        .post(`/api/data_amount/check`)
+        .post(`${config.server.apiRoute}/data_amount/check`)
         .send({ unique_id: validUniqueId });
 
       expect(response.status).toBe(500);
@@ -103,7 +103,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountByUniqueId.mockRejectedValue(new NotFoundError('Data amount not found'));
 
       const response = await request(app)
-        .post(`/api/data_amount/check`)
+        .post(`${config.server.apiRoute}/data_amount/check`)
         .send({ unique_id: validUniqueId });
 
       expect(response.status).toBe(404);
@@ -112,7 +112,7 @@ describe('Data Amount API Endpoints', () => {
     });
   });
 
-  describe('POST /api/data_amount/filter', () => {
+  describe(`POST ${config.server.apiRoute}/data_amount/filter`, () => {
     const validRequestWithPositionGroup = {
       parameter_position_group: 'Engineering',
       parameter_seniority: 'Senior',
@@ -143,7 +143,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountWithFilters.mockResolvedValue(mockData);
 
       const response = await request(app)
-        .post(`/api/data_amount/filter`)
+        .post(`${config.server.apiRoute}/data_amount/filter`)
         .send(validRequestWithPositionGroup);
 
       expect(response.status).toBe(200);
@@ -186,7 +186,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountWithFilters.mockResolvedValue(mockData);
 
       const response = await request(app)
-        .post(`/api/data_amount/filter`)
+        .post(`${config.server.apiRoute}/data_amount/filter`)
         .send(validRequestWithPosition);
 
       expect(response.status).toBe(200);
@@ -231,7 +231,7 @@ describe('Data Amount API Endpoints', () => {
       });
 
       const response = await request(app)
-        .post(`/api/data_amount/filter`)
+        .post(`${config.server.apiRoute}/data_amount/filter`)
         .send(invalidRequest);
 
       // The API doesn't validate at the route level, but the function will throw an error
@@ -252,7 +252,7 @@ describe('Data Amount API Endpoints', () => {
       });
 
       const response = await request(app)
-        .post(`/api/data_amount/filter`)
+        .post(`${config.server.apiRoute}/data_amount/filter`)
         .send(incompleteRequest);
 
       expect(response.status).toBe(500);
@@ -264,7 +264,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountWithFilters.mockRejectedValue(new Error('Database error'));
 
       const response = await request(app)
-        .post(`/api/data_amount/filter`)
+        .post(`${config.server.apiRoute}/data_amount/filter`)
         .send(validRequestWithPositionGroup);
 
       expect(response.status).toBe(500);
@@ -277,7 +277,7 @@ describe('Data Amount API Endpoints', () => {
       queryDataAmountWithFilters.mockRejectedValue(new NotFoundError('No data found'));
 
       const response = await request(app)
-        .post(`/api/data_amount/filter`)
+        .post(`${config.server.apiRoute}/data_amount/filter`)
         .send(validRequestWithPositionGroup);
 
       expect(response.status).toBe(404);

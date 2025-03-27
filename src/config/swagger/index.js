@@ -53,7 +53,7 @@ const options = {
     },
     servers: [
       {
-        url: config.server.apiRoute,
+        url: '',
         description: 'API Server'
       }
     ],
@@ -66,8 +66,6 @@ const options = {
   },
   // Include both route files and swagger API files for JSDoc parsing
   apis: [
-    path.join(__dirname, '../../routes/**/*.js'),
-    path.join(__dirname, '../../routes/*.js'),
     path.join(__dirname, 'api/*.swagger.js')
   ]
 };

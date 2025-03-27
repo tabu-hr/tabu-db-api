@@ -1,4 +1,6 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
+
 /**
  * @swagger
  * tags:
@@ -26,8 +28,6 @@ const commonSchemas = require('../common.swagger');
  *               type: number
  *             salary_gross:
  *               type: number
- *         type:
- *           type: string
  *         action:
  *           type: string
  *         error:
@@ -36,7 +36,7 @@ const commonSchemas = require('../common.swagger');
  */
 
 const salarySwagger = {
-  '/salary/check': {
+  [`${API_ROUTE}/salary/check`]: {
     post: {
       summary: 'Check salary data',
       description: 'Retrieves salary information for the given unique ID',
@@ -130,9 +130,6 @@ module.exports = {
               type: 'number'
             }
           }
-        },
-        type: {
-          type: 'string'
         },
         action: {
           type: 'string'

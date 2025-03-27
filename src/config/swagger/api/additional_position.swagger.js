@@ -1,6 +1,7 @@
+const { API_ROUTE } = require('./routes');
 
 module.exports = {
-    [`/additional_position/check`]: {
+    [`${API_ROUTE}/additional_position/check`]: {
         post: {
             summary: 'Check additional position data',
             description: 'Retrieves additional position data for the given unique ID',

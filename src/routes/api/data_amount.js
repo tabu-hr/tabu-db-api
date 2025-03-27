@@ -15,7 +15,7 @@ router.post('/check', async (req, res, next) => {
   try {
     const row = await queryDataAmountByUniqueId(unique_id);
     if (row) {
-      res.json(responseDataAmountData(true, 'Data amount exists', true, 'queryDataAmountByUniqueId', null, row.amount));
+      res.status(200).json(responseDataAmountData(true, 'Data amount exists', true, 'queryDataAmountByUniqueId', null, row.amount));
     } else {
       throw new NotFoundError('Data amount not found for the provided unique_id');
     }
@@ -44,7 +44,7 @@ router.post('/filter', async (req, res, next) => {
       parameter_tech
     );
     if (row) {
-      res.json(responseDataAmountFiltersData(
+      res.status(200).json(responseDataAmountFiltersData(
         true, 
         'Data with filters exists', 
         true, 

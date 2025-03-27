@@ -1,7 +1,8 @@
+const { API_ROUTE } = require('./routes');
 const commonSchemas = require('../common.swagger');
 
 const tableQuerySwagger = {
-  '/{tableName}': {
+  [`${API_ROUTE}/{tableName}`]: {
     get: {
       summary: 'Query data from a specific table',
       description: 'Returns data from the specified table with optional pagination',

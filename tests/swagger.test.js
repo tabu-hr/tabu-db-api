@@ -18,7 +18,7 @@ const swaggerDocument = {
     },
     servers: [
         {
-            url: '/api',
+            url: '',
             description: 'API base URL'
         }
     ],

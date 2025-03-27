@@ -1,4 +1,12 @@
 const express = require('express');
+const router = express.Router();
+
+// List routes endpoint implementation
+router.get('/', (req, res) => {
+    // Your route listing logic here
+    res.json({ message: 'Routes listing endpoint' });
+});
+
 const app = express();
 const environmentRoutes = require('./environmentRoutes');
 

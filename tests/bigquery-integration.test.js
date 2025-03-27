@@ -1,9 +1,9 @@
 const request = require('supertest');
-const express = require('express');
-const router = require('../src/routes/api');
+const { createTestApp } = require('./setup');
 const config = require('../src/config/config');
 const { queryBigQuery } = require('../src/models/bigQuery');
-const apiRoute = config.server.apiRoute;
+// Ensure we're using the API route from config
+const { apiRoute } = config.server;
 
 // This test uses a real BigQuery connection, no mocking!
 describe('BigQuery Pagination Integration Tests', () => {
@@ -11,9 +11,7 @@ describe('BigQuery Pagination Integration Tests', () => {
 
   beforeAll(() => {
     // Create Express app with the real router
-    app = express();
-    app.use(express.json());
-    app.use(apiRoute, router);
+    app = createTestApp();
 
     // Ensure we're using the real BigQuery model, not a mock
     jest.unmock('../src/models/bigQuery');
