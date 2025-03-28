@@ -4,8 +4,8 @@ const { NotFoundError } = require('../../errors/customErrors');
 const { queryListTechByUniqueId } = require('../../models/list_tech');
 const { responseListTechData } = require('../../dto/list_tech');
 const { validateListTech } = require('../../validators');
-
-router.post('/check', async (req, res, next) => {
+const { extractToken, authenticateToken } = require('../../middleware/auth');
+router.post('/check', extractToken, authenticateToken, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const rows = await queryListTechByUniqueId(unique_id);

@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { NotFoundError } = require('../../errors/customErrors');
+const { extractToken, authenticateToken } = require('../../middleware/auth');
 const { validateListCountrySalary } = require('../../validators');
 const { responseListCountrySalaryData } = require('../../dto/list_country_salary');
 const { queryListCountrySalaryByUniqueId } = require('../../models/list_country_salary');
 
-router.post('/check', async (req, res, next) => {
+router.post('/check', extractToken, authenticateToken, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const rows = await queryListCountrySalaryByUniqueId(unique_id);

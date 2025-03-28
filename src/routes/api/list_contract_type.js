@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { NotFoundError } = require('../../errors/customErrors');
+const { extractToken, authenticateToken } = require('../../middleware/auth');
 const { queryListContractTypeByUniqueId } = require('../../models/list_contract_type');
 const { responseListContractTypeData } = require('../../dto/list_contract_type');
 const { validateListContractType, validate } = require('../../validators');
 
-router.post('/check', validate(validateListContractType), async (req, res, next) => {
+router.post('/check', extractToken, authenticateToken, validate(validateListContractType), async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const rows = await queryListContractTypeByUniqueId(unique_id);

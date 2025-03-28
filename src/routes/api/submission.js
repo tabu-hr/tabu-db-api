@@ -4,10 +4,12 @@ const { NotFoundError } = require('../../errors/customErrors');
 const { querySubmissionByUniqueId } = require('../../models/submission');
 const { responseSubmissionData } = require('../../dto/submission');
 const { validateSubmission } = require('../../validators');
+const { extractToken, authenticateToken } = require('../../middleware/auth');
+const { verifyToken } = require('../../services/jwt');
 
-router.post('/check', async (req, res, next) => {
-  const { unique_id } = req.body;
+router.post('/check', extractToken, authenticateToken, async (req, res, next) => {
   try {
+    const { unique_id } = req.body;
     const row = await querySubmissionByUniqueId(unique_id);
     if (row) {
       res.json(responseSubmissionData(true, 'Submission data exists', true, 'querySubmissionByUniqueId', null, row));

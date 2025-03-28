@@ -4,7 +4,7 @@ const config = require('../../config/config');
 const { queryUserTable, queryUserByEmail } = require('../../models/user');
 const { responseUser, responseCheckUser } = require('../../dto/user');
 const { validateUserCheck } = require('../../validators');
-
+const { verifyGoogleToken, generateTokens } = require('../../services/jwt');
 router.get('/', async (req, res, next) => {
   try {
     const rows = await queryUserTable();
@@ -15,17 +15,63 @@ router.get('/', async (req, res, next) => {
 });
 
 router.post('/check', async (req, res, next) => {
-  const { email, isGoogleLogin, name } = req.body;
+  const { email, isGoogleLogin, name, credential } = req.body;
   try {
+    if (!isGoogleLogin) {
+      return res.status(400).json(responseCheckUser(
+        false,
+        'Only Google login is supported',
+        false,
+        'checkLogin',
+        'Google login is required',
+        null,
+        null
+      ));
+    }
+
+    if (!credential) {
+      throw new Error('Google credential is required for Google login');
+    }
+
+    let googleUserId;
+    try {
+      const payload = await verifyGoogleToken(credential);
+      googleUserId = payload.sub;
+    } catch (error) {
+      return res.status(401).json(responseCheckUser(
+        false,
+        'Invalid Google credentials',
+        false,
+        'verifyGoogleToken',
+        error.message,
+        null,
+        null
+      ));
+    }
+
     const row = await queryUserByEmail(email);
     if (row) {
-      if (isGoogleLogin) {
-        res.json(responseCheckUser(true, 'User email exists', true, 'queryUserByEmail', null, name, row.unique_id));
-      } else {
-        res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
-      }
+      const tokens = generateTokens(googleUserId);
+      res.json(responseCheckUser(
+        true,
+        'User email exists',
+        true,
+        'queryUserByEmail',
+        null,
+        name,
+        row.unique_id,
+        tokens
+      ));
     } else {
-      res.json(responseCheckUser(true, 'User email does not exist', false, 'queryUserByEmail'));
+      res.json(responseCheckUser(
+        true,
+        'User email does not exist',
+        false,
+        'queryUserByEmail',
+        null,
+        null,
+        null
+      ));
     }
   } catch (err) {
     next(err);

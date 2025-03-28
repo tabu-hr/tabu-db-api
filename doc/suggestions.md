@@ -61,6 +61,8 @@ Based on the code analysis, here are several improvement recommendations for the
   - **Application**: Applied to all routes in `src/routes/api.js`
   - **Testing**: Test case added in `tests/securityHeaders.test.js`
 
+- **[DONE] JWT Middleware Optimization (2025-03-28)**: Streamlined JWT verification, ensuring consistent middleware chain (extractToken, authenticateToken) across all protected routes.
+
 ## 3. Performance Improvements
 
 - **[DONE] Connection Pooling (2025-03-05)**: Ensure BigQuery connections are properly managed, potentially implementing connection pooling for better resource utilization.

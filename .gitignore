@@ -10,3 +10,7 @@ docker-compose.yaml
 nginx.conf/
 tests.disabled/
 coverage/
+
+# Redis
+dump.rdb
+*.rdb

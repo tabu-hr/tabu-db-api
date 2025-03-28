@@ -9,8 +9,8 @@ const {
   validateDataAmount,
   validateDataAmountWithFilters
 } = require('../../validators');
-
-router.post('/check', async (req, res, next) => {
+const { extractToken, authenticateToken } = require('../../middleware/auth');
+router.post('/check', extractToken, authenticateToken, async (req, res, next) => {
   const { unique_id } = req.body;
   try {
     const row = await queryDataAmountByUniqueId(unique_id);
@@ -25,7 +25,7 @@ router.post('/check', async (req, res, next) => {
   }
 });
 
-router.post('/filter', async (req, res, next) => {
+router.post('/filter', extractToken, authenticateToken, async (req, res, next) => {
   const { 
     parameter_position_group, 
     parameter_position, 

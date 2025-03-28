@@ -187,6 +187,29 @@ cache: {
 },
 
 /**
+* Authentication configuration settings
+*/
+auth: {
+    /**
+    * Secret key for JWT token generation and verification
+    */
+    jwtSecret: process.env.JWT_SECRET || 'your-default-jwt-secret-key',
+
+    /**
+    * Google OAuth client ID
+    */
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+
+    /**
+    * JWT token expiration times
+    */
+    tokenExpiry: {
+        access: process.env.JWT_ACCESS_TOKEN_EXPIRY || '1h',
+        refresh: process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d'
+    }
+},
+
+/**
 * Pagination configuration settings
 */
 pagination: {
@@ -216,6 +239,8 @@ Object.defineProperty(config, 'isProduction', {
 Object.freeze(config.cache.durations);
 Object.freeze(config.cache);
 Object.freeze(config.pagination);
+Object.freeze(config.auth.tokenExpiry);
+Object.freeze(config.auth);
 // config.server and config will be frozen after port initialization
 
 // Export the getAvailablePort function and the config object
