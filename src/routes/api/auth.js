@@ -30,12 +30,12 @@ router.post('/refresh-token', (req, res) => {
   try {
     const token = req.body.refreshToken;
     try {
-      const { refreshToken } = refreshToken(token);
+      const { newAccessToken, newRefreshToken } = refreshToken(token);
       res.json({
         success: true,
         data: {
-          accessToken: refreshToken,
-          refreshToken: refreshToken
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken
         }
       });
     } catch (error) {
