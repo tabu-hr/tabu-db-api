@@ -21,9 +21,22 @@ router.post('/revoke', extractToken, authenticateToken, (req, res) => {
 
 // Route to refresh the JWT token
 router.post('/refresh-token', (req, res) => {
+  if (!req.body || !req.body.refreshToken) {
+    return res.status(400).json({
+      success: false,
+      message: 'Refresh token is required'
+    });
+  }
   try {
     const { refreshToken: token } = req.body;
-    const { newAccessToken, newRefreshToken } = refreshToken(token);
+    try {
+      const { newAccessToken, newRefreshToken } = refreshToken(token);
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid refresh token'
+      });
+}
     res.json({
       success: true,
       data: {
