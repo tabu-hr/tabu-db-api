@@ -28,22 +28,22 @@ router.post('/refresh-token', (req, res) => {
     });
   }
   try {
-    const { refreshToken: token } = req.body;
+    const token = req.body.refreshToken;
     try {
-      const { newAccessToken, newRefreshToken } = refreshToken(token);
-    } catch (error) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid refresh token'
+      const { refreshToken } = refreshToken(token);
+      res.json({
+        success: true,
+        data: {
+          accessToken: refreshToken,
+          refreshToken: refreshToken
+        }
       });
-}
-    res.json({
-      success: true,
-      data: {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken
+    } catch (error) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid refresh token: ${error.message}`
+        });
       }
-    });
   } catch (error) {
     res.status(400).json({
       success: false,
