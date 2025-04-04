@@ -31,16 +31,16 @@ const verifyGoogleToken = async (token) => {
 
 const generateTokens = (userId) => {
   const accessToken = jwt.sign(
-    { userId }, 
-    config.auth.jwtSecret, 
+    { userId },
+    config.auth.jwtSecret,
     { expiresIn: config.auth.tokenExpiry.access }
   );
   const refreshToken = jwt.sign(
-    { userId }, 
-    config.auth.jwtSecret, 
+    { userId },
+    config.auth.jwtSecret,
     { expiresIn: config.auth.tokenExpiry.refresh }
   );
-  
+
   return {
     accessToken,
     refreshToken
@@ -53,20 +53,40 @@ const verifyToken = (token) => {
       throw new Error('Token has been revoked');
     }
     const decoded = jwt.verify(token, config.auth.jwtSecret);
-    
+
     // Check if token is expired
     const currentTime = Math.floor(Date.now() / 1000);
     if (decoded.exp && currentTime > decoded.exp) {
       revokeToken(token); // Revoke expired token
       throw new Error('Token has expired');
     }
-    
+
     return decoded;
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       revokeToken(token); // Revoke expired token
     }
     throw new Error(error.message || 'Invalid token');
+  }
+};
+
+const refreshToken = (refreshToken) => {
+  try {
+    const decoded = jwt.verify(refreshToken, config.auth.jwtSecret);
+    const { userId } = decoded;
+    const newAccessToken = jwt.sign(
+      { userId },
+      config.auth.jwtSecret,
+      { expiresIn: config.auth.tokenExpiry.access }
+    );
+    const newRefreshToken = jwt.sign(
+      { userId },
+      config.auth.jwtSecret,
+      { expiresIn: config.auth.tokenExpiry.refresh }
+    );
+    return { newAccessToken, newRefreshToken };
+  } catch (error) {
+    throw new Error('Invalid refresh token');
   }
 };
 
@@ -85,5 +105,6 @@ module.exports = {
   verifyGoogleToken,
   generateTokens,
   verifyToken,
+  refreshToken,
   revokeToken
 };
