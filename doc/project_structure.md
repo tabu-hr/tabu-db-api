@@ -1,21 +1,21 @@
 # Project Structure
 
+REPLACE
 The project is structured as follows:
 
-- `src/`: Contains the source code for the API.
-  - `src/models/`: Contains the models for the API.
-  - `src/routes/`: Contains the routes for the API.
-  - `src/dto/`: Contains the data transfer objects for the API.
-  - `src/index.js`: The entry point for the API.
+- `src/`: Source code for the API.
+  - `src/models/`: Models for the API.
+  - `src/routes/`: Routes for the API.
+  - `src/dto/`: Data transfer objects for the API.
+  - `src/index.js`: Entry point for the API.
 
-- `doc/`: Contains the documentation for the API.
+- `doc/`: Documentation for the API.
 
-- `.env`: Contains environment variables.
-- `.gitignore`: Contains the list of files and directories to be ignored by Git.
-- `LICENSE`: Contains the license information.
-- `mock_data.sql`: Contains mock data for testing.
-- `package-lock.json`: Contains the lock file for the project dependencies.
-- `package.json`: Contains the package information.
-- `README.md`: Contains the readme file for the project.
-
-- `app_demo tables.sql`: Contains the SQL file for the `app_demo` dataset.
+- `.env`: Environment variables.
+- `.gitignore`: Files and directories to be ignored by Git.
+- `LICENSE`: License information.
+- `mock_data.sql`: Mock data for testing.
+- `package-lock.json`: Lock file for project dependencies.
+- `package.json`: Package information.
+- `README.md`: Readme file for the project.
+- `app_demo tables.sql`: SQL file for the `app_demo` dataset.
