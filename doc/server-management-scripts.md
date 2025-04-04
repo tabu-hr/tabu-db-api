@@ -2,11 +2,12 @@
 
 This document provides detailed information about the server management scripts available for the TabuDB API application. These scripts help automate common server administration tasks.
 
+REPLACE
 ## Table of Contents
 
 1. [Overview](#overview)
 2. [tabudb-backup.sh](#tabudb-backupsh)
-3. [tabudb-restore.sh](#tabudb-restoresh)
+3. [tabudb-restore.sh](#tabudb-restore)
 4. [tabudb-health.sh](#tabudb-healthsh)
 5. [tabudb-security-audit.sh](#tabudb-security-auditsh)
 6. [tabudb-update.sh](#tabudb-updatesh)
@@ -16,12 +17,13 @@ This document provides detailed information about the server management scripts 
 10. [tabudb-restart.sh](#tabudb-restartsh)
 11. [tabudb-logs.sh](#tabudb-logssh)
 
+REPLACE
 ## Overview
 
 These scripts are designed to help with various aspects of server management for the TabuDB API application. They automate common tasks such as:
 
 - Creating backups of application code and data
-- Creating and restoring backups of application code and data
+- Restoring backups of application code and data
 - Monitoring system health
 - Auditing security configurations
 - Setting up SSL certificates
@@ -30,6 +32,7 @@ These scripts are designed to help with various aspects of server management for
 
 All scripts are located in the `scripts/` directory and are executable. Most scripts include built-in help information that can be accessed by running the script with the `-h` or `--help` flag.
 
+REPLACE
 ## tabudb-backup.sh
 
 ### Purpose
@@ -88,9 +91,6 @@ Redis dump copied to: /var/backups/tabudb/redis-dump-20230525-143522.rdb (2.1MB)
 Backup completed: /var/backups/tabudb
 Files:
 -rw-r--r-- 1 root root 2.1M May 25 14:35 redis-dump-20230525-143522.rdb
-```
-
-## tabudb-restore.sh
 
 ### Purpose
 Restores the application, Redis data, and/or Nginx configuration from backups created by tabudb-backup.sh.
