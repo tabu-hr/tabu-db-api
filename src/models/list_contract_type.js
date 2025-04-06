@@ -9,14 +9,14 @@ const bigquery = new BigQuery({
 const schemaName = config.database.schema;
 
 async function queryListContractTypeByUniqueId(unique_id) {
-  const sqlQuery = `
+  const query = `
     SELECT contract_type, amount
     FROM \`${schemaName}.list_contract_type\`
     WHERE unique_id = @unique_id
-    ORDER BY amount DESC;
+    ORDER BY amount DESC
   `;
   const options = {
-    query: sqlQuery,
+    query: query,
     params: { unique_id },
   };
 

@@ -8,10 +8,16 @@ const responseUser = (success, table, model, response = null, error = null) => {
   };
 };
 
-const responseCheckUser = (success, message, exists, action, error, name, id) => {
+const responseCheckUser = (success, message, exists, action, error, name, id, tokens = null) => {
   return {
     success,
-    response : {message, exists, name, id},
+    response: {
+      message,
+      exists,
+      name,
+      id,
+      tokens
+    },
     action,
     error,
   };

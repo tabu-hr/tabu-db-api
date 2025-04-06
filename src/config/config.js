@@ -95,10 +95,16 @@ async function getAvailablePort() {
 
 // Define the mutable config object - will be frozen after port initialization
 const config = {
-/**
-* Server configuration settings
-*/
-server: {
+    /**
+     * Environment flag indicating if app is running in production
+     * @type {boolean}
+     */
+    isProduction: process.env.NODE_ENV === 'production',
+
+    /**
+    * Server configuration settings
+    */
+    server: {
     /**
     * Port the server will listen on
     * @default 3001
@@ -181,6 +187,29 @@ cache: {
 },
 
 /**
+* Authentication configuration settings
+*/
+auth: {
+    /**
+    * Secret key for JWT token generation and verification
+    */
+    jwtSecret: process.env.JWT_SECRET || 'your-default-jwt-secret-key',
+
+    /**
+    * Google OAuth client ID
+    */
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+
+    /**
+    * JWT token expiration times
+    */
+    tokenExpiry: {
+        access: process.env.JWT_ACCESS_TOKEN_EXPIRY || '1h',
+        refresh: process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d'
+    }
+},
+
+/**
 * Pagination configuration settings
 */
 pagination: {
@@ -202,9 +231,16 @@ pagination: {
 // Note: We don't freeze server object until after port initialization
 Object.freeze(config.database);
 Object.freeze(config.rateLimiting);
+Object.defineProperty(config, 'isProduction', {
+    value: process.env.NODE_ENV === 'production',
+    writable: false,
+    configurable: false
+});
 Object.freeze(config.cache.durations);
 Object.freeze(config.cache);
 Object.freeze(config.pagination);
+Object.freeze(config.auth.tokenExpiry);
+Object.freeze(config.auth);
 // config.server and config will be frozen after port initialization
 
 // Export the getAvailablePort function and the config object
