@@ -68,8 +68,8 @@ config.getAvailablePort()
     .then(port => {
         config.freezeConfig();
         
-        app.listen(port, () => {
-            logger.info(`Server is running on http://localhost:${port}`);
+        app.listen(port, config.server.host,() => {
+            logger.info(`Server is running on http://${config.server.host}:${port}`);
             logger.info(`Environment: ${environment}`);
             logger.info(`API Route: ${config.server.apiRoute}`);
             logger.info(`Configuration port: ${config.server.port}`);

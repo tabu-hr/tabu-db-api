@@ -110,7 +110,11 @@ const config = {
     * @default 3001
     */
     port: parseInt(process.env.PORT || '3001', 10),
-
+    /**
+    * Host to bind the server
+    * @default '0.0.0.0'
+    */
+    host: process.env.HOST || '0.0.0.0',
     /**
     * Base route for API endpoints
     * @default '/api'
