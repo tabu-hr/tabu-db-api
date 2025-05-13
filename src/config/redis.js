@@ -11,6 +11,7 @@ const activeClients = new Set();
 function getRedisClient(options = {}) {
   // Default configuration
   const defaultConfig = {
+    host: 'tabu-redis',
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
     autoResendUnfulfilledCommands: true,
