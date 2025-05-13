@@ -8,7 +8,7 @@ const responseUser = (success, table, model, response = null, error = null) => {
   };
 };
 
-const responseCheckUser = (success, message, exists, action, error, name, id, tokens = null) => {
+const responseCheckUser = (success, message, exists, action, error, name, id, needs_to_update, tokens = null) => {
   return {
     success,
     response: {
@@ -16,6 +16,7 @@ const responseCheckUser = (success, message, exists, action, error, name, id, to
       exists,
       name,
       id,
+      needs_to_update,
       tokens
     },
     action,
