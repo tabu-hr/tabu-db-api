@@ -25,6 +25,7 @@ router.post('/check', async (req, res, next) => {
         'checkLogin',
         'Google login is required',
         null,
+        null,
         null
       ));
     }
@@ -45,6 +46,7 @@ router.post('/check', async (req, res, next) => {
         'verifyGoogleToken',
         error.message,
         null,
+        null,
         null
       ));
     }
@@ -60,6 +62,7 @@ router.post('/check', async (req, res, next) => {
         null,
         name,
         row.unique_id,
+        row.needs_to_update,
         tokens
       ));
     } else {
@@ -68,6 +71,7 @@ router.post('/check', async (req, res, next) => {
         'User email does not exist',
         false,
         'queryUserByEmail',
+        null,
         null,
         null,
         null
