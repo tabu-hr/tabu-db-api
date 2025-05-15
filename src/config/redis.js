@@ -11,7 +11,7 @@ const activeClients = new Set();
 function getRedisClient(options = {}) {
   // Default configuration
   const defaultConfig = {
-    host: 'tabu-redis',
+    host: process.env.REDIS_HOST || 'tabu-redis', //Enables backend to be run on Windows without docker with: $env:REDIS_HOST="localhost"; npm start
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
     autoResendUnfulfilledCommands: true,
