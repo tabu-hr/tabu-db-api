@@ -136,6 +136,9 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_cache_bypass \$http_upgrade;
+        
+        # Handle client-side routing
+        try_files \$uri \$uri/ /index.html;
     }
 }
 EOF
